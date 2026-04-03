@@ -14,7 +14,7 @@ $container = null;
 
 try {
     /** @var \Vortex\Container $container */
-    $container = require $projectRoot . '/bootstrap/app.php';
+    $container = require $projectRoot . '/startup/app.php';
     (new Kernel($container))->send();
 } catch (\Throwable $exception) {
     error_log($exception->getMessage() . "\n" . $exception->getTraceAsString());
