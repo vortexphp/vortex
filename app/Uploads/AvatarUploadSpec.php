@@ -7,7 +7,7 @@ namespace App\Uploads;
 use Vortex\Config\Repository;
 
 /**
- * Resolved avatar upload rules from {@code config/files.php} for {@see \Vortex\Files\LocalPublicStorage::storeUpload()}.
+ * Resolved avatar upload rules from {@code config/files.php} for {@see \Vortex\Files\Storage::storeUpload()}.
  */
 final readonly class AvatarUploadSpec
 {

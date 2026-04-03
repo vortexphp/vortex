@@ -12,6 +12,7 @@ use Vortex\Database\Connection;
 use Vortex\Events\Dispatcher;
 use Vortex\Events\DispatcherFactory;
 use Vortex\Files\LocalPublicStorage;
+use Vortex\Files\Storage;
 use Vortex\Http\Csrf;
 use Vortex\Http\ErrorRenderer;
 use Vortex\Http\Session;
@@ -29,6 +30,8 @@ $basePath = dirname(__DIR__);
 require $basePath . '/vendor/autoload.php';
 
 Log::setBasePath($basePath);
+
+Storage::setBasePath($basePath);
 
 Env::load($basePath . '/.env');
 

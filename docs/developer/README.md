@@ -30,7 +30,7 @@ How to build features in this project. Real references: **`app/Handlers/`**, **`
 
 - [Checklist for a new feature](checklist.md) — ordered steps for a typical CRUD-style addition
 - [In-app docs preview](docs-site.md) — **`/docs`** Markdown browser (debug only)
-- [Uploads](uploads.md) — files, **`LocalPublicStorage`**, specs
+- [Files and uploads](../framework/files-and-uploads.md) — **`Storage`**, **`LocalPublicStorage`**, specs
 
 ## Engine and deploy
 

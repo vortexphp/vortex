@@ -11,7 +11,7 @@ The HTTP stack lives under **`engine/`** (`Vortex\*`). The app wires it in **`bo
 | `config/*.php`, env, `Repository` | [Configuration](configuration.md) |
 | Kernel, request/response, session, CSRF, proxies | [HTTP](http.md) |
 | Twig, `View`, shared data | [Views](views.md) |
-| Uploads, `public/` storage | [Files and uploads](files-and-uploads.md) |
+| `Storage`, uploads, `public/` | [Files and uploads](files-and-uploads.md) |
 | Locales, `trans()`, middleware | [Internationalization](i18n.md) |
 | Passwords vs `APP_KEY` HMAC | [Crypto](crypto.md) |
 | Small utilities (`*Help`, `Log`, `Env`) | [Support helpers](support-helpers.md) |

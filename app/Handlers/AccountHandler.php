@@ -7,7 +7,7 @@ namespace App\Handlers;
 use App\Models\User;
 use App\Uploads\AvatarUploadSpec;
 use Vortex\Crypto\Password;
-use Vortex\Files\LocalPublicStorage;
+use Vortex\Files\Storage;
 use Vortex\Http\Csrf;
 use Vortex\Http\Request;
 use Vortex\Http\Response;
@@ -122,7 +122,7 @@ final class AccountHandler
         $previousAvatar = isset($user->avatar) && is_string($user->avatar) ? $user->avatar : null;
 
         if ($removeAvatar) {
-            LocalPublicStorage::deleteIfExists($previousAvatar);
+            Storage::deletePublic($previousAvatar);
             $payload['avatar'] = null;
         } elseif ($upload !== null && $upload->hasFile()) {
             $stored = $this->tryStoreAvatar($upload, $uid, $previousAvatar);
@@ -180,14 +180,14 @@ final class AccountHandler
         $stem = $uid . '-' . bin2hex(random_bytes(8));
 
         try {
-            $relative = LocalPublicStorage::storeUpload(
+            $relative = Storage::storeUpload(
                 $upload,
                 $spec->directory,
                 $stem,
                 $spec->mimeExtensions,
                 $spec->maxBytes,
             );
-            LocalPublicStorage::deleteIfExists($previousAvatar);
+            Storage::deletePublic($previousAvatar);
 
             return ['error' => null, 'relative' => $relative];
         } catch (Throwable $e) {

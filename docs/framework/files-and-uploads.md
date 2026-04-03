@@ -26,30 +26,48 @@ if ($file === null || ! $file->hasFile() || ! $file->isValid()) {
 }
 ```
 
-## `LocalPublicStorage`
+## `Storage`
 
-Stores files under **`public/`** and returns a **relative path** suitable for URLs (`/uploads/...` via **`public_url()`**).
+**`Vortex\Files\Storage`** is the façade over **named disks** from **`config/storage.php`** (see below). Call **`Storage::setBasePath($projectRoot)`** once at bootstrap (with **`Log::setBasePath`**). Disks are built **lazily** when first used.
 
-**`LocalPublicStorage::storeUpload($file, $directoryRelativeToPublic, $filenameStem, $mimeToExtension, $maxBytes)`**
+### Disks and drivers
 
-- Validates the upload, size, and MIME against **`$mimeToExtension`** (map of allowed MIME → extension without dot).
-- Rejects empty/`..` directory or invalid stem.
-- Writes **`{directory}/{stem}.{ext}`** under `public/`.
+| Driver | Purpose |
+|--------|---------|
+| **`local`** | Directory under the project (default **`root`**: **`storage/app`**) — **`Filesystem`** only |
+| **`local_public`** | **`public/`** tree — implements **`PublicFilesystem`** (upload validation via **`LocalPublicStorage`**) |
+| **`null`** | No-op reads/writes (tests or “disable exports”) |
 
-**`LocalPublicStorage::deleteIfExists(?string $relativePath)`** — deletes a file under `public/` if it resolves safely.
+**`Storage::disk(?string $name)`** returns **`Vortex\Contracts\Filesystem`**. Cast or use **`instanceof PublicFilesystem`** when you need **`storeUpload`**.
 
-The storage singleton is configured in bootstrap with the project’s **`public`** directory.
+### Config keys (`config/storage.php`)
 
-> **Example — store with an allow-list map**
+| Key | Purpose |
+|-----|---------|
+| **`default`** | Disk used by **`Storage::put`**, **`get`**, **`exists`**, **`delete`**, **`append`** (env **`STORAGE_DISK`**) |
+| **`public_disk`** | Disk name for **`Storage::publicRoot()`** and **`Storage::deletePublic()`** (must be **`local_public`**) |
+| **`upload_disk`** | Disk name for **`Storage::storeUpload()`** (must be **`local_public`**) |
+| **`disks.{name}.driver`** | **`local`**, **`local_public`**, or **`null`** |
+| **`disks.{name}.root`** | For **`local`**: path segment relative to project root (default **`storage/app`**) |
+
+### Facade shortcuts
+
+| Method | Target |
+|--------|--------|
+| **`Storage::put` / `append` / `get` / `exists` / `delete`** | **`default`** disk |
+| **`Storage::storeUpload(...)`** | **`upload_disk`** |
+| **`Storage::publicRoot()`**, **`deletePublic()`** | **`public_disk`** |
+
+> **Example — public upload**
 
 ```php
-use Vortex\Files\LocalPublicStorage;
+use Vortex\Files\Storage;
 use Vortex\Http\Request;
 
 $file = Request::file('document');
 // … validate $file …
 
-$relative = LocalPublicStorage::storeUpload(
+$relative = Storage::storeUpload(
     $file,
     'uploads/docs',
     'report-' . bin2hex(random_bytes(6)),
@@ -62,7 +80,30 @@ $relative = LocalPublicStorage::storeUpload(
 // $relative e.g. uploads/docs/report-a1b2c3.pdf → URL public_url($relative)
 ```
 
+> **Example — private export**
+
+```php
+use Vortex\Files\Storage;
+
+Storage::put('exports/run-' . date('Ymd') . '.csv', $csvBody);
+```
+
+> **Example — named disk**
+
+```php
+use Vortex\Files\Storage;
+
+Storage::disk('local')->put('cache/foo.json', $json);
+$raw = Storage::disk('null')->get('any'); // always null
+```
+
+## `LocalPublicStorage`
+
+Singleton used by the **`local_public`** driver for **`storeUpload`** validation and path rules. Register with **`LocalPublicStorage::setInstance()`** in **`bootstrap/app.php`**.
+
 ## Config
+
+**`config/storage.php`** — disks and **`STORAGE_DISK`** (default disk).
 
 **`config/files.php`**: **`max_upload_bytes`** (env **`UPLOAD_MAX_BYTES`**), and nested **`avatar`** (`directory`, `mime_extensions`) for profile photos.
 

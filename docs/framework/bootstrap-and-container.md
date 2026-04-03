@@ -9,7 +9,7 @@
 
 Typical responsibilities:
 
-1. Load Composer autoload, then **`Log::setBasePath($basePath)`** so **`Log::`** and **`ErrorRenderer`** can write **`storage/logs/app.log`**.
+1. Load Composer autoload, then **`Log::setBasePath($basePath)`** and **`Storage::setBasePath($basePath)`** so logging and **`config/storage.php`** disks resolve (see [Files and uploads](files-and-uploads.md)).
 2. Load **`.env`** via **`Env::load()`**.
 3. Create **`Container`**, register itself: `instance(Container::class, $container)`.
 4. Register **singletons**: `Repository`, `Connection`, `Cache`, `Dispatcher`, `Mailer`, `Session`, `Csrf`, `LocalPublicStorage`, `Translator`, Twig `Factory`, `Router`, `ErrorRenderer`, and any app classes (e.g. docs services).

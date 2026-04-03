@@ -154,7 +154,7 @@ Use these in order when you touch the relevant area. Helpers live under **`frame
 
 1. Join segments with **`PathHelp::join`** (normalizes **`\`**, skips empty/**`.`**, resolves **`..`** between segments).
 2. After resolving real paths, enforce containment with **`PathHelp::isBelowBase`** (both paths must exist for **`realpath`**).
-3. Keep **`LocalPublicStorage`** for public uploads; use **`PathHelp`** for general filesystem layout (logs, imports).
+3. Keep **`Storage`** / **`LocalPublicStorage`** for public uploads and **`Storage::put`** / **`get`** for private **`storage/app/`** data; use **`PathHelp`** for other filesystem layout (logs, imports).
 
 ### 9.5 Numbers and sizes (`Vortex\Support\NumberHelp`)
 
