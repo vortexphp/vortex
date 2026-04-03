@@ -5,12 +5,14 @@
 **`Vortex\Http\Kernel::send()`**:
 
 1. **`TrustProxies::apply()`** — may adjust `$_SERVER` when behind a trusted proxy (see below).
-2. **`Request::capture()`** and **`Request::setCurrent()`**.
+2. **`Request::capture()`** then **`Kernel::handle($request)`** (same pipeline as below, then **`$response->send()`**).
+
+**`Kernel::handle(Request $request): Response`** (no output): runs steps 3–6 for a request you build yourself (e.g. **`Request::make()`** in PHPUnit). Does **not** call **`TrustProxies::apply()`**; call it first if the test must honor **`TRUSTED_PROXIES`**.
+
 3. **`Router::dispatch()`** with **`Repository::get('app.middleware', [])`** as global middleware.
 4. On any **`Throwable`**, **`ErrorRenderer::exception()`** produces the response.
 5. **`$response->withSecurityHeaders()`** — default security headers if not already set.
 6. Optional **CSP** from config (see [Configuration](configuration.md)).
-7. **`$response->send()`**.
 
 ## Router (named paths)
 
@@ -31,7 +33,9 @@ TRUSTED_PROXIES=10.0.0.1
 
 ## Request
 
-Static API on the current request (set during `Kernel::send()`):
+**`Request::capture()`** reads superglobals (used by **`Kernel::send()`**). **`Request::make($method, $path, …)`** builds a request for tests without **`$_SERVER`**. **`Request::normalizePath()`** applies the same path rules as **`capture()`**.
+
+Static API on the current request (set during **`Kernel::handle()`** / **`send()`**):
 
 | Method | Purpose |
 |--------|---------|
@@ -71,6 +75,7 @@ if (Request::wantsJson()) {
 | `Response::json($data, $status)` | JSON |
 | `Response::redirect($url, $status)` | Redirect |
 | `->header($name, $value)` | Fluent header |
+| `->headers()` | Current header map (for tests / inspection) |
 | `->withSecurityHeaders()` | X-Content-Type-Options, Referrer-Policy, X-Frame-Options |
 
 > **Example — JSON + custom header**

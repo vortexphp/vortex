@@ -218,7 +218,7 @@ These items are **not** required to ship, but they close common gaps in **`frame
 
 7. **Pagination in the UI** — **`QueryBuilder::paginate()`** already exists; standardize list pages with shared Twig partials or a small view model so every listing behaves the same.
 
-8. **HTTP testing harness** — A path that runs **`Kernel`** (or equivalent) with a synthetic **`Request`** and asserts on **`Response`** makes handler and middleware tests realistic without a browser (see [developer/testing.md](developer/testing.md)).
+8. ~~**HTTP testing harness**~~ — **`Kernel::handle(Request::make(...))`**, **`Response::headers()`**; see [developer/testing.md](developer/testing.md) and framework **`tests/KernelHandleTest.php`**.
 
 ### When you need them
 

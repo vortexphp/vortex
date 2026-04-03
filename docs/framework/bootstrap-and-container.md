@@ -54,4 +54,4 @@ $router = $container->make(\Vortex\Routing\Router::class);
 
 ## Router registration
 
-`Router` is registered with a factory that runs **`RouteDiscovery::loadHttpRoutes($router, $basePath)`**, which loads every `app/Routes/*.php` file except `*Console.php`.
+`Router` is registered with a factory that runs **`RouteDiscovery::loadHttpRoutes($router, $basePath)`**, which **`require`s** every `app/Routes/*.php` file (top-level **`Route::`…** calls) except `*Console.php`.

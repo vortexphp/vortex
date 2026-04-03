@@ -4,7 +4,7 @@
 
 - Put HTTP registration in **`app/Routes/*.php`**.
 - The file name must **not** end with **`Console.php`** (those files are for CLI only).
-- Each file must **`return` a callable** with signature **`callable(): void`** (no arguments). Inside it, call `Route::get` / `Route::post` / `Route::add`.
+- Each file is **`require`d** in name order; call **`Route::get` / `Route::post` / `Route::add`** at the top level (no wrapper closure).
 
 Discovery runs at bootstrap: see `Vortex\Routing\RouteDiscovery::loadHttpRoutes()`.
 
@@ -17,12 +17,10 @@ use App\Handlers\HomeHandler;
 use Vortex\Http\Response;
 use Vortex\Routing\Route;
 
-return static function (): void {
-    Route::get('/', [HomeHandler::class, 'index']);
+Route::get('/', [HomeHandler::class, 'index']);
 
-    Route::get('/items', [ItemHandler::class, 'index'])
-        ->post('/items', [ItemHandler::class, 'store']);
-};
+Route::get('/items', [ItemHandler::class, 'index'])
+    ->post('/items', [ItemHandler::class, 'store']);
 ```
 
 **Chaining** on the same `Route::get(...)` return value registers more methods on **different** paths (see `/items` GET + POST above).
