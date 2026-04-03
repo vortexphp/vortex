@@ -12,6 +12,10 @@
 6. Optional **CSP** from config (see [Configuration](configuration.md)).
 7. **`$response->send()`**.
 
+## Router (named paths)
+
+Register paths with **`Vortex\Routing\Route`**, assign a name with **`->name('blog.show')`**, then build URLs using the global **`route()`** helper or Twig **`route()`**. See [developer/routes.md](../developer/routes.md#named-routes).
+
 ## TrustProxies
 
 When the app is behind a reverse proxy or CDN, set **`TRUSTED_PROXIES`** in `.env`:

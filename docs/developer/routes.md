@@ -27,6 +27,25 @@ return static function (): void {
 
 **Chaining** on the same `Route::get(...)` return value registers more methods on **different** paths (see `/items` GET + POST above).
 
+## Named routes
+
+After registering a route, call **`->name('unique.name')`** on the returned **`Router`**. Then build paths with **`route('unique.name', ['param' => $value])`** (global helper from the framework) or Twig **`{{ route('blog.show', { slug: post.slug }) }}`**.
+
+Names must be unique. **`{param}`** values are URL-encoded; **`{param...}`** greedy segments are inserted verbatim (you supply the subpath).
+
+```php
+Route::get('/blog/{slug}', [BlogHandler::class, 'show'])->name('blog.show');
+
+Route::get('/login', [LoginHandler::class, 'show'], [GuestOnly::class])
+    ->name('login.show')
+    ->post('/login', [LoginHandler::class, 'store'], [GuestOnly::class])
+    ->name('login.store');
+```
+
+Use **`Vortex\Routing\Router::interpolatePattern()`** only if you need the same rules without the router (tests or tooling).
+
+Query strings: **`Vortex\Support\UrlHelp::withQuery(route('blog.index'), ['page' => 2])`**.
+
 **Closure** action (same parameter order as `{placeholders}`):
 
 ```php

@@ -214,7 +214,7 @@ These items are **not** required to ship, but they close common gaps in **`frame
 
 ### Developer experience
 
-6. **Named routes and URL generation** — **`UrlHelp`** today builds query strings only; named routes (or a **`route('name', $params)`** helper) reduce duplication when paths change.
+6. ~~**Named routes and URL generation**~~ — **`Router::path`**, **`Route::name()`**, global **`route()`**, Twig **`route()`**. Use **`UrlHelp::withQuery`** for query strings on top of **`route()`**.
 
 7. **Pagination in the UI** — **`QueryBuilder::paginate()`** already exists; standardize list pages with shared Twig partials or a small view model so every listing behaves the same.
 
