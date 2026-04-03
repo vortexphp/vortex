@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1c0a175f1408d6ebd15fb72f4ea75924",
+    "content-hash": "58cebb99d584fb2aa4aac28f51594329",
     "packages": [
         {
             "name": "symfony/deprecation-contracts",
@@ -323,16 +323,16 @@
         },
         {
             "name": "vortexphp/framework",
-            "version": "v0.3.0",
+            "version": "v0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vortexphp/framework.git",
-                "reference": "69e19ba0840ecff07aaba80a9e7e8a6bc7d92998"
+                "reference": "5bea4d7825ecf12a84a68b85f21d5517ccf9d611"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vortexphp/framework/zipball/69e19ba0840ecff07aaba80a9e7e8a6bc7d92998",
-                "reference": "69e19ba0840ecff07aaba80a9e7e8a6bc7d92998",
+                "url": "https://api.github.com/repos/vortexphp/framework/zipball/5bea4d7825ecf12a84a68b85f21d5517ccf9d611",
+                "reference": "5bea4d7825ecf12a84a68b85f21d5517ccf9d611",
                 "shasum": ""
             },
             "require": {
@@ -365,9 +365,9 @@
             "description": "Lightweight PHP application stack (app/, engine/, config, assets)",
             "support": {
                 "issues": "https://github.com/vortexphp/framework/issues",
-                "source": "https://github.com/vortexphp/framework/tree/v0.3.0"
+                "source": "https://github.com/vortexphp/framework/tree/v0.5.0"
             },
-            "time": "2026-04-03T18:04:07+00:00"
+            "time": "2026-04-03T19:23:06+00:00"
         }
     ],
     "packages-dev": [],
