@@ -55,11 +55,11 @@
                     {{ trans('blog.manage.pagination_summary', { page: pagination.page, last: pagination.last_page, total: pagination.total }) }}
                 </p>
                 <div class="flex gap-4">
-                    {% if pagination.page > 1 %}
-                        <a href="{{ url_query('/blog/manage', { page: pagination.page - 1 }) }}" class="font-semibold text-emerald-600 transition hover:text-emerald-500 dark:text-emerald-400">{{ trans('blog.manage.pagination_prev') }}</a>
+                    {% if not pagination.onFirstPage() %}
+                        <a href="{{ pagination.urlForPage(pagination.page - 1) }}" class="font-semibold text-emerald-600 transition hover:text-emerald-500 dark:text-emerald-400">{{ trans('blog.manage.pagination_prev') }}</a>
                     {% endif %}
-                    {% if pagination.page < pagination.last_page %}
-                        <a href="{{ url_query('/blog/manage', { page: pagination.page + 1 }) }}" class="font-semibold text-emerald-600 transition hover:text-emerald-500 dark:text-emerald-400">{{ trans('blog.manage.pagination_next') }}</a>
+                    {% if not pagination.onLastPage() %}
+                        <a href="{{ pagination.urlForPage(pagination.page + 1) }}" class="font-semibold text-emerald-600 transition hover:text-emerald-500 dark:text-emerald-400">{{ trans('blog.manage.pagination_next') }}</a>
                     {% endif %}
                 </div>
             </nav>

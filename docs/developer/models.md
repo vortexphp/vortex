@@ -57,16 +57,16 @@ public static function published(): QueryBuilder
 $latest = Post::published()->orderByDesc('published_at')->limit(10)->get();
 ```
 
-**Pagination** (`QueryBuilder::paginate` returns `items`, `total`, `page`, `per_page`, `last_page`):
+**Pagination** — **`QueryBuilder::paginate(int $page, int $perPage = 15)`** returns **`Vortex\Pagination\Paginator`** (public **`items`**, **`total`**, **`page`**, **`per_page`**, **`last_page`**, plus **`urlForPage()`**, **`hasPages()`**, **`onFirstPage()`**, **`onLastPage()`**). For link generation call **`$paginator->withBasePath(\route('your.route'))`** (or any path/query base) then use **`urlForPage($n)`** in PHP or Twig. See [Pagination](../framework/pagination.md).
 
 ```php
 $page = max(1, (int) ($_GET['page'] ?? 1));
-$result = Item::query()
+$pagination = Item::query()
     ->where('user_id', $userId)
     ->orderByDesc('id')
     ->paginate($page, 15);
 
-foreach ($result['items'] as $item) {
+foreach ($pagination->items as $item) {
     // …
 }
 ```

@@ -18,6 +18,7 @@ The HTTP stack lives under **`engine/`** (`Vortex\*`). The app wires it in **`bo
 | `php power` CLI | [Console](console.md) |
 | `Validator::make`, rules | [Validation](validation.md) |
 | `Cache` contract, `Cache::remember`, file store | [Cache](cache.md) |
+| `Paginator`, `QueryBuilder::paginate` | [Pagination](pagination.md) |
 | `Dispatcher`, `EventBus::dispatch` | [Events](events.md) |
 | `Mailer`, `Mail::send` | [Mail](mail.md) |
 | Error pages, `Log::exception` | [Errors and logging](errors-and-logging.md) |

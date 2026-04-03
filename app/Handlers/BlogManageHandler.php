@@ -24,11 +24,12 @@ final class BlogManageHandler
         }
 
         $page = NumberHelp::parseInt(Request::query()['page'] ?? null, 1, 1, 500);
-        $pagination = Post::forUserPaginated($uid, $page, 15);
+        $pagination = Post::forUserPaginated($uid, $page, 15)
+            ->withBasePath(\route('blog.manage.index'));
 
         return View::html('blog.manage.index', [
             'title' => \trans('blog.manage.title'),
-            'posts' => $pagination['items'],
+            'posts' => $pagination->items,
             'pagination' => $pagination,
         ]);
     }

@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Vortex\Database\Model;
 use Vortex\Database\QueryBuilder;
+use Vortex\Pagination\Paginator;
 use Vortex\Support\StringHelp;
 
 final class Post extends Model
@@ -46,32 +47,12 @@ final class Post extends Model
             ->get();
     }
 
-    /**
-     * @return array{
-     *     items: list<self>,
-     *     total: int,
-     *     page: int,
-     *     per_page: int,
-     *     last_page: int
-     * }
-     */
-    public static function forUserPaginated(int $userId, int $page, int $perPage = 15): array
+    public static function forUserPaginated(int $userId, int $page, int $perPage = 15): Paginator
     {
-        $result = static::query()
+        return static::query()
             ->where('user_id', $userId)
             ->orderByDesc('updated_at')
             ->paginate($page, $perPage);
-
-        /** @var list<self> $items */
-        $items = $result['items'];
-
-        return [
-            'items' => $items,
-            'total' => $result['total'],
-            'page' => $result['page'],
-            'per_page' => $result['per_page'],
-            'last_page' => $result['last_page'],
-        ];
     }
 
     public function user(): ?User

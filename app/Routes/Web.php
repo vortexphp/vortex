@@ -28,7 +28,7 @@ Route::get('/docs', [DocsHandler::class, 'index'])->name('docs.index');
 Route::get('/docs/{path...}', [DocsHandler::class, 'show'])->name('docs.show');
 
 Route::get('/blog', [BlogHandler::class, 'index'])->name('blog.index');
-Route::get('/blog/manage', [BlogManageHandler::class, 'index'], [RequireAuth::class]);
+Route::get('/blog/manage', [BlogManageHandler::class, 'index'], [RequireAuth::class])->name('blog.manage.index');
 Route::get('/blog/manage/posts/new', [BlogManageHandler::class, 'create'], [RequireAuth::class]);
 Route::post('/blog/manage/posts', [BlogManageHandler::class, 'store'], [RequireAuth::class]);
 Route::get('/blog/manage/posts/{id}/edit', [BlogManageHandler::class, 'edit'], [RequireAuth::class]);
