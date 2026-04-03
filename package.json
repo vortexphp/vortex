@@ -1,5 +1,5 @@
 {
-    "name": "powercode-framework",
+    "name": "vortexphp",
     "private": true,
     "scripts": {
         "dev:css": "tailwindcss -i assets/css/app.css -o public/css/app.css --watch",

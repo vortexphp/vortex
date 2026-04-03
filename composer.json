@@ -5,7 +5,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "league/commonmark": "^2.8"
+        "league/commonmark": "^2.8",
+        "vortexphp/framework": "^0.0.1"
     },
     "autoload": {
         "psr-4": {
