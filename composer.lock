@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "66bffdcb9c11bf1403857627666eb277",
+    "content-hash": "cdce6a250835fd3fdd4b31a49fe8f4a0",
     "packages": [
         {
             "name": "dflydev/dot-access-data",
@@ -879,11 +879,11 @@
         },
         {
             "name": "vortexphp/framework",
-            "version": "0.0.1",
+            "version": "0.1.0",
             "dist": {
                 "type": "path",
                 "url": "../framework",
-                "reference": "f0a30484351d6535897f0e55c93010764ce21e34"
+                "reference": "deae5c0126a2ef216eb9a199c0e8ac1d51dc9957"
             },
             "require": {
                 "ext-mbstring": "*",
@@ -903,7 +903,8 @@
                     "Vortex\\": "src/"
                 },
                 "files": [
-                    "src/I18n/helpers.php"
+                    "src/I18n/helpers.php",
+                    "src/Routing/helpers.php"
                 ]
             },
             "autoload-dev": {
