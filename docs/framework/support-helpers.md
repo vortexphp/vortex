@@ -8,7 +8,9 @@ Small static utilities under **`Vortex\Support\`**.
 
 ## `Log`
 
-**`Log::exception(Throwable $e, string $basePath)`** — appends a line to **`storage/logs/app.log`** (creates directory if needed). Used from **`ErrorRenderer::exception`**.
+**`Log::setBasePath($projectRoot)`** — required before any write; set at bootstrap.
+
+**`Log::exception(Throwable $e)`**, **`Log::info`**, **`warning`**, **`error`**, **`debug`**, **`notice`**, **`critical`**, **`alert`**, **`emergency`**, and **`Log::log($level, …)`** append to **`storage/logs/app.log`**. Optional context arrays are JSON-encoded on the same line. Used from **`ErrorRenderer::exception`** and anywhere in app code.
 
 ## `UrlHelp`
 

@@ -20,12 +20,15 @@ use Vortex\Mail\MailFactory;
 use Vortex\Routing\RouteDiscovery;
 use Vortex\Routing\Router;
 use Vortex\Support\Env;
+use Vortex\Support\Log;
 use Vortex\View\Factory;
 use Vortex\View\View;
 
 $basePath = dirname(__DIR__);
 
 require $basePath . '/vendor/autoload.php';
+
+Log::setBasePath($basePath);
 
 Env::load($basePath . '/.env');
 
@@ -93,7 +96,7 @@ View::share('docsPreviewEnabled', (bool) Repository::get('app.debug', false));
 $container->singleton(App\Docs\DocsIndex::class, static fn (): App\Docs\DocsIndex => new App\Docs\DocsIndex($basePath . '/docs'));
 $container->singleton(App\Docs\MarkdownRenderer::class, static fn (): App\Docs\MarkdownRenderer => new App\Docs\MarkdownRenderer());
 
-$container->singleton(ErrorRenderer::class, static fn (): ErrorRenderer => new ErrorRenderer($basePath));
+$container->singleton(ErrorRenderer::class, static fn (): ErrorRenderer => new ErrorRenderer());
 
 $container->singleton(Router::class, static function (Container $c) use ($basePath): Router {
     $router = new Router($c);

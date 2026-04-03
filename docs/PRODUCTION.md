@@ -31,13 +31,14 @@ Run **`php vortex doctor`** (or **`composer doctor`**) on the server after deplo
 - [ ] PHP extension **`ext-mbstring`** is installed (**`vortex doctor`** checks this).
 - [ ] At least one PDO driver: **pdo_sqlite** and/or **pdo_mysql** / **pdo_pgsql** (match `.env` `DB_DRIVER`). Doctor lists loaded drivers.
 - [ ] **`storage/`** and **`storage/logs/`** are writable by the PHP/web user. Doctor tries a create/delete probe in `storage/logs/`.
+- [ ] If **`config/files.php`** defines upload profiles with a **`directory`** key, **`vortex doctor`** checks each path exists under **`public/`**, is writable, and can create/delete a probe file (see §12). No **`config/files.php`** → this block is skipped.
 - [ ] Confirm **`storage/logs/app.log`** is created after a handled error (or touch a test route that throws in staging). Doctor does not replace this; optional manual check.
 
 ### What `vortex doctor` does not check (verify manually)
 
 Passing **`doctor`** / **`doctor --production`** does **not** guarantee:
 
-- Writable **upload** directories under **`public/`** or **`php.ini`** **`upload_max_filesize`** / **`post_max_size`** (see §12).
+- Correct **`php.ini`** **`upload_max_filesize`** / **`post_max_size`** vs **`UPLOAD_MAX_BYTES`** (see §12). Upload **directories** from **`config/files.php`** are checked when that file exists; FPM **`php.ini`** limits are not.
 - **OPcache** / **`display_errors`** / other **php.ini** production tuning (see §12).
 - **Locale files** deployed for **`APP_LOCALES`** (see §2).
 
@@ -228,7 +229,7 @@ These items are **not** required to ship, but they close common gaps in **`frame
 
 11. **Static analysis in CI** — PHPStan or Psalm (and optional coverage gates) alongside **`composer test`** catches regressions PHPUnit alone may miss.
 
-12. **`doctor` hardening** — Assert (from **`config/files.php`**) that expected **`public/…`** upload roots exist and are writable (**`ext-mbstring`** and **`APP_KEY`** are already checked).
+12. ~~**`doctor` hardening**~~ — **`config/files.php`** upload profiles (**`directory`**) are checked: path under **`public/`**, writable, probe write (**`ext-mbstring`** and **`APP_KEY`** were already covered).
 
 13. **Deploy examples** — Expand **`docs/deploy/nginx-site.conf.example`**: HTTPS **`server`** block, documented **`client_max_body_size`**, optional cache headers for **`public/css/`** (or static assets) where it helps.
 
@@ -242,7 +243,7 @@ Details: [framework/files-and-uploads.md](framework/files-and-uploads.md), **`co
 
 - [ ] Set **`UPLOAD_MAX_BYTES`** in **`.env`** to the max size your product allows (default **2 MB** in **`.env.example`**).
 - [ ] Ensure **`upload_max_filesize`** and **`post_max_size`** in **php.ini** (FPM pool / `.user.ini` if applicable) are **≥ `UPLOAD_MAX_BYTES`**; otherwise large requests fail before your app runs.
-- [ ] Create and **chmod** upload directories under **`public/`** that **`config/files.php`** uses (e.g. **`public/uploads/avatars`** for avatars). The PHP/web user must be able to **write** there.
+- [ ] Create and **chmod** upload directories under **`public/`** that **`config/files.php`** uses (e.g. **`public/uploads/avatars`** for avatars). The PHP/web user must be able to **write** there. **`php vortex doctor`** fails if those directories are missing or not writable (when **`config/files.php`** lists them).
 - [ ] Reverse proxy: **`client_max_body_size`** (nginx) or equivalent **≥ `UPLOAD_MAX_BYTES`**.
 - [ ] Production **php.ini** / pool: **`display_errors=Off`**, **`log_errors=On`**; enable **OPcache** with a sensible production config (validate in staging after deploy).
 

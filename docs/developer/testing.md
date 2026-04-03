@@ -53,8 +53,8 @@ Most suites target **`engine/`** (router, request, validation, crypto, config, e
 
 To assert status, body, and headers without a browser or listening socket:
 
-1. Bootstrap your container the same way as **`public/index.php`** (e.g. **`require bootstrap/app.php`**), or use **`Vortex\Application::boot($basePath)`** if your stack matches the stock **`Application`** wiring.
-2. Ensure **`ErrorRenderer`** is registered on the container (the stock **`Application::boot`** in the framework package does not bind it; the app **`bootstrap/app.php`** does).
+1. Bootstrap your container the same way as **`public/index.php`** (e.g. **`require bootstrap/app.php`**), or use **`Vortex\Application::boot($basePath)`** if your stack matches the stock **`Application`** wiring. Both set **`Log::setBasePath()`** so **`Log::`** and **`ErrorRenderer::exception`** can write logs.
+2. Ensure **`ErrorRenderer`** is registered on the container (the stock **`Application::boot`** in the framework package does not bind it; the app **`bootstrap/app.php`** does). Use **`new ErrorRenderer()`** (no arguments).
 3. Call **`Kernel::handle(Request::make('GET', '/path', $query, $body, $headers))`** (see **`Request::make`** for argument order) and inspect **`$response->httpStatus()`**, **`$response->body()`**, **`$response->headers()`**.
 
 ```php

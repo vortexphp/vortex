@@ -2,7 +2,7 @@
 
 ## `ErrorRenderer`
 
-Injectable service (registered in bootstrap with **`$basePath`**).
+Injectable service (registered in bootstrap; no constructor arguments).
 
 ### `notFound()`
 
@@ -11,7 +11,7 @@ Injectable service (registered in bootstrap with **`$basePath`**).
 
 ### `exception(Throwable $e)`
 
-1. **`Log::exception($e, $basePath)`** — always logs to **`storage/logs/app.log`**.
+1. **`Log::exception($e)`** — always logs to **`storage/logs/app.log`** (requires **`Log::setBasePath()`** at bootstrap; see below).
 2. **JSON**: generic message unless **`app.debug`**; when debug, includes message, class, file, line, trace.
 3. **HTML**: **`errors.500`** with user-safe or debug message and optional trace; fallback HTML if Twig fails.
 
@@ -39,7 +39,16 @@ public function show(string $id): Response
 
 ## Logging
 
-Beyond exceptions, **`Vortex\Support\Log`** currently exposes **`Log::exception`** only. Use PHP **`error_log`** or extend logging as needed for your deployment.
+**`Vortex\Support\Log`** writes to **`storage/logs/app.log`** (creates **`storage/logs`** if needed). Call **`Log::setBasePath($projectRoot)`** once after Composer autoload — **`Application::boot()`** and the stock **`bootstrap/app.php`** do this.
+
+Level helpers (optional **`array $context`**, JSON-appended when non-empty): **`emergency`**, **`alert`**, **`critical`**, **`error`**, **`warning`**, **`notice`**, **`info`**, **`debug`**. Use **`Log::log($level, $message, $context)`** for a dynamic level string.
+
+```php
+use Vortex\Support\Log;
+
+Log::info('User signed in', ['id' => $userId]);
+Log::warning('Rate limit soft hit', ['ip' => $ip]);
+```
 
 ## Templates
 

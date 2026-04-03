@@ -51,6 +51,8 @@ Static API on the current request (set during **`Kernel::handle()`** / **`send()
 | `headers()`, `server()` | Raw arrays |
 | `wantsJson()` | `Accept` prefers JSON (API errors) |
 | `isSecure()` | HTTPS |
+| `cookie($name, $default)` | Value from the **`Cookie`** request header |
+| `cookies()` | All parsed cookies (`name => value`) |
 
 > **Example — typical reads in a handler**
 
@@ -61,11 +63,19 @@ $q = Request::query();
 $page = max(1, (int) ($q['page'] ?? 1));
 $email = (string) Request::input('email', '');
 $token = Request::header('X-Api-Token');
+$theme = Request::cookie('theme');
 
 if (Request::wantsJson()) {
     // …
 }
 ```
+
+## Cookie (HTTP) vs Session
+
+- **`Vortex\Http\Cookie`** — value object for **application** **`Set-Cookie`** headers. Build with **`new Cookie($name, $value, …)`** (path, domain, **`maxAge`**, **`expires`**, **`secure`**, **`httpOnly`**, **`sameSite`**), then **`$response->cookie($cookie)`** or **`Cookie::queue($cookie)`** (merged by **`Kernel::handle()`** and **`Application::run()`** via **`Cookie::flushQueued()`** before the response is returned or sent). **`Cookie::parseRequestHeader()`** is used internally when building **`Request`** from the **`Cookie`** header. **`Cookie::normalizedSameSite()`** is shared with **`Session`** for consistent **`SameSite`** spelling.
+- **`Vortex\Http\Session`** — server-side **`$_SESSION`** data. The session **id** is still an HTTP cookie, but PHP issues it via **`session_set_cookie_params()`** using **`config/session.php`** — not via **`Cookie::toHeaderValue()`**.
+
+To clear an app cookie, send **`new Cookie($name, '', maxAge: 0)`** (and matching **`path`** / **`domain`**).
 
 ## Response
 
@@ -75,6 +85,7 @@ if (Request::wantsJson()) {
 | `Response::json($data, $status)` | JSON |
 | `Response::redirect($url, $status)` | Redirect |
 | `->header($name, $value)` | Fluent header |
+| `->cookie(Cookie $cookie)` | Append **`Set-Cookie`** (multiple allowed) |
 | `->headers()` | Current header map (for tests / inspection) |
 | `->withSecurityHeaders()` | X-Content-Type-Options, Referrer-Policy, X-Frame-Options |
 
@@ -90,7 +101,7 @@ return Response::json(['items' => $rows])
 
 ## Session
 
-**`Vortex\Http\Session`** is a facade backed by PHP sessions.
+**`Vortex\Http\Session`** is a facade for PHP’s session **storage** (`$_SESSION`), not for arbitrary cookies. The session **cookie** (name, lifetime, **`secure`**, **`SameSite`**, **`HttpOnly`**) is configured through **`session_set_cookie_params()`** from **`config/session.php`** (env-backed). Prefer **`Cookie`** + **`Response::cookie()`** for things like “remember theme” or tracking cookies that are not session keys.
 
 | Method | Purpose |
 |--------|---------|
@@ -99,8 +110,6 @@ return Response::json(['items' => $rows])
 | `regenerate()` | New session id |
 | `authUserId()` | Normalized `auth_user_id` or null |
 | `flushAuth()` | Clears `auth_user_id` and regenerates id |
-
-Cookie name, lifetime, `secure`, and `SameSite` come from **`config/session.php`** (and env vars wired there).
 
 > **Example — flash then redirect**
 

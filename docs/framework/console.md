@@ -19,7 +19,7 @@ php vortex db-check
 | Command | Purpose |
 |---------|---------|
 | **`serve`** | PHP built-in server for **`public/`** (default `127.0.0.1:8080`, tries next port if busy) |
-| **`doctor`** | Environment / production checklist |
+| **`doctor`** | Environment / production checklist; **`config/files.php`** upload **`directory`** roots under **`public/`** (exists, writable, probe) when that config exists |
 | **`smoke`** | HTTP GET health checks against a base URL |
 | **`db-check`** | `SELECT 1` via app **`Connection`** (loads bootstrap + `.env`) |
 | **`migrate`** | Runs **`database/schema.sql`**, then **`database/patches/*.sql`** in order (skips duplicate-column errors where applicable) |

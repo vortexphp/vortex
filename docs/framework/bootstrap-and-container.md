@@ -9,10 +9,11 @@
 
 Typical responsibilities:
 
-1. Load Composer autoload and **`.env`** via `Env::load()`.
-2. Create **`Container`**, register itself: `instance(Container::class, $container)`.
-3. Register **singletons**: `Repository`, `Connection`, `Cache`, `Dispatcher`, `Mailer`, `Session`, `Csrf`, `LocalPublicStorage`, `Translator`, Twig `Factory`, `Router`, `ErrorRenderer`, and any app classes (e.g. docs services).
-4. Call **`Repository::setInstance`**, **`Session::setInstance`**, **`Csrf::setInstance`**, **`LocalPublicStorage::setInstance`**, **`Translator::setInstance`**, **`View::useFactory(...)`**, **`AppContext::set($container)`**.
+1. Load Composer autoload, then **`Log::setBasePath($basePath)`** so **`Log::`** and **`ErrorRenderer`** can write **`storage/logs/app.log`**.
+2. Load **`.env`** via **`Env::load()`**.
+3. Create **`Container`**, register itself: `instance(Container::class, $container)`.
+4. Register **singletons**: `Repository`, `Connection`, `Cache`, `Dispatcher`, `Mailer`, `Session`, `Csrf`, `LocalPublicStorage`, `Translator`, Twig `Factory`, `Router`, `ErrorRenderer`, and any app classes (e.g. docs services).
+5. Call **`Repository::setInstance`**, **`Session::setInstance`**, **`Csrf::setInstance`**, **`LocalPublicStorage::setInstance`**, **`Translator::setInstance`**, **`View::useFactory(...)`**, **`AppContext::set($container)`**.
 
 `bootstrap/app.php` **returns** the `Container` instance.
 
