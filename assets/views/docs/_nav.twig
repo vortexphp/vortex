@@ -1,0 +1,26 @@
+{# Expects: navSections, currentSlug (string|null) #}
+<nav class="docs-side-nav rounded-2xl border border-zinc-200/80 bg-white/90 p-4 shadow-sm dark:border-zinc-800/80 dark:bg-zinc-900/60" aria-label="{{ trans('docs.menu_label') }}">
+    <a href="/docs" class="mb-4 flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800/80 dark:hover:text-white">
+        <svg class="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        {{ trans('docs.nav_home') }}
+    </a>
+
+    <label class="sr-only" for="docs-nav-filter">{{ trans('docs.filter_label') }}</label>
+    <input id="docs-nav-filter" type="search" name="docs-nav-filter" autocomplete="off" placeholder="{{ trans('docs.filter_placeholder') }}" class="mb-5 w-full rounded-lg border border-zinc-200/90 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm placeholder:text-zinc-400 focus:border-emerald-500/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-emerald-500/40">
+
+    {% for section in navSections %}
+        <div class="docs-nav-section {{ not loop.first ? 'mt-8 border-t border-zinc-200/80 pt-8 dark:border-zinc-800/80' : '' }}" data-docs-nav-section>
+            <h2 class="px-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">{{ section.title }}</h2>
+            <ul class="mt-3 space-y-0.5">
+                {% for item in section.items %}
+                    {% set active = currentSlug is not null and item.slug == currentSlug %}
+                    <li data-docs-nav-item data-docs-nav-text="{{ item.title }} {{ item.slug }}">
+                        <a href="{{ item.href }}" class="block rounded-lg px-3 py-2 text-sm transition {{ active ? 'bg-emerald-600/12 font-semibold text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/80 dark:hover:text-white' }}" {% if active %}aria-current="page"{% endif %}>
+                            {{ item.title }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+</nav>
