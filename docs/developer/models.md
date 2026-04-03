@@ -37,7 +37,7 @@ $item = Item::find($id);
 
 Add **static methods** on the model for reusable scopes (e.g. `Post::published()` returning a `QueryBuilder`).
 
-**Same connection as `DB`**: **`Model::connection()`** resolves the singleton **`Connection`** (identical to **`DB::select`** / **`DB::transaction`**). See [Database](database.md) for transactions and the **`DB`** facade.
+**Same connection as default `DB`**: **`Model::connection()`** resolves the default **`Connection`** from **`DatabaseManager`** (identical to **`DB::select`** / **`DB::transaction`**). See [Database](database.md) for named connections and the **`DB`** facade.
 
 **Scope + chain** (from `App\Models\Post`):
 

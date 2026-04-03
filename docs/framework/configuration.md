@@ -37,10 +37,10 @@ TRUSTED_PROXIES=127.0.0.1
 | File | Role |
 |------|------|
 | **`config/app.php`** | `name`, `debug`, `url`, `csp_header`, `locale`, `fallback_locale`, `locales`, **`middleware`** (global HTTP middleware class list) |
-| **`config/database.php`** | PDO / connection settings for `Connection` |
-| **`config/session.php`** | `name`, `lifetime`, `secure`, `samesite` (cookie params) |
+| **`config/database.php`** | **`default`** connection name, **`connections.{name}.driver`** (sqlite / mysql / pgsql) and DSN fields for **`DatabaseManager`** |
+| **`config/session.php`** | **`default`** store, **`stores.{name}.driver`** (`native` / `null`), and native cookie params |
 | **`config/files.php`** | `max_upload_bytes`, `avatar` directory and MIME map (see [Files and uploads](files-and-uploads.md)) |
-| **`config/cache.php`** | `driver` (`file` / `null`), `path`, `prefix` — see [Cache](cache.md) |
+| **`config/cache.php`** | **`default`** store, **`stores.{name}.driver`** — see [Cache](cache.md) |
 | **`config/events.php`** | `listen` — event FQCN → listener class(es); see [Events](events.md) |
 | **`config/mail.php`** | `driver`, `from`, `smtp` — see [Mail](mail.md) |
 | **`config/throttle.php`** | Named rate-limit profiles (`default`, `login`, …) for **`Vortex\Http\Middleware\Throttle`** — see [HTTP](http.md) |

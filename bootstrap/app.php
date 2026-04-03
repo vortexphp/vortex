@@ -3,12 +3,13 @@
 declare(strict_types=1);
 
 use Vortex\AppContext;
-use Vortex\Cache\CacheFactory;
+use Vortex\Cache\CacheManager;
 use Vortex\Config\Repository;
 use Vortex\Container;
-use Vortex\Contracts\Cache;
+use Vortex\Contracts\Cache as CacheContract;
 use Vortex\Contracts\Mailer;
 use Vortex\Database\Connection;
+use Vortex\Database\DatabaseManager;
 use Vortex\Events\Dispatcher;
 use Vortex\Events\DispatcherFactory;
 use Vortex\Files\LocalPublicStorage;
@@ -16,6 +17,7 @@ use Vortex\Files\Storage;
 use Vortex\Http\Csrf;
 use Vortex\Http\ErrorRenderer;
 use Vortex\Http\Session;
+use Vortex\Http\SessionManager;
 use Vortex\I18n\Translator;
 use Vortex\Mail\MailFactory;
 use Vortex\Routing\RouteDiscovery;
@@ -42,15 +44,18 @@ $container->singleton(Repository::class, static fn (): Repository => new Reposit
 
 Repository::setInstance($container->make(Repository::class));
 
-$container->singleton(Connection::class, static fn (): Connection => new Connection());
+$container->singleton(DatabaseManager::class, static fn (): DatabaseManager => DatabaseManager::fromRepository());
+$container->singleton(Connection::class, static fn (Container $c): Connection => $c->make(DatabaseManager::class)->connection());
 
-$container->singleton(Cache::class, static fn (): Cache => CacheFactory::make($basePath));
+$container->singleton(CacheManager::class, static fn (): CacheManager => CacheManager::fromRepository($basePath));
+$container->singleton(CacheContract::class, static fn (Container $c): CacheContract => $c->make(CacheManager::class)->store());
 
 $container->singleton(Dispatcher::class, static fn (Container $c): Dispatcher => DispatcherFactory::make($c));
 
 $container->singleton(Mailer::class, static fn (): Mailer => MailFactory::make($basePath));
 
-$container->singleton(Session::class, static fn (): Session => new Session());
+$container->singleton(SessionManager::class, static fn (): SessionManager => SessionManager::fromRepository());
+$container->singleton(Session::class, static fn (Container $c): Session => new Session($c->make(SessionManager::class)->store()));
 
 Session::setInstance($container->make(Session::class));
 

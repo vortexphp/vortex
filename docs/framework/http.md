@@ -73,7 +73,7 @@ if (Request::wantsJson()) {
 ## Cookie (HTTP) vs Session
 
 - **`Vortex\Http\Cookie`** — value object for **application** **`Set-Cookie`** headers. Build with **`new Cookie($name, $value, …)`** (path, domain, **`maxAge`**, **`expires`**, **`secure`**, **`httpOnly`**, **`sameSite`**), then **`$response->cookie($cookie)`** or **`Cookie::queue($cookie)`** (merged by **`Kernel::handle()`** and **`Application::run()`** via **`Cookie::flushQueued()`** before the response is returned or sent). **`Cookie::parseRequestHeader()`** is used internally when building **`Request`** from the **`Cookie`** header. **`Cookie::normalizedSameSite()`** is shared with **`Session`** for consistent **`SameSite`** spelling.
-- **`Vortex\Http\Session`** — server-side **`$_SESSION`** data. The session **id** is still an HTTP cookie, but PHP issues it via **`session_set_cookie_params()`** using **`config/session.php`** — not via **`Cookie::toHeaderValue()`**.
+- **`Vortex\Http\Session`** — facade over a store from **`SessionManager`** (`config/session.php`: `default` + `stores.{name}.driver`). The `native` driver uses server-side **`$_SESSION`** data; the session **id** is still an HTTP cookie issued by PHP via **`session_set_cookie_params()`**, not via **`Cookie::toHeaderValue()`**.
 
 To clear an app cookie, send **`new Cookie($name, '', maxAge: 0)`** (and matching **`path`** / **`domain`**).
 
@@ -101,7 +101,7 @@ return Response::json(['items' => $rows])
 
 ## Session
 
-**`Vortex\Http\Session`** is a facade for PHP’s session **storage** (`$_SESSION`), not for arbitrary cookies. The session **cookie** (name, lifetime, **`secure`**, **`SameSite`**, **`HttpOnly`**) is configured through **`session_set_cookie_params()`** from **`config/session.php`** (env-backed). Prefer **`Cookie`** + **`Response::cookie()`** for things like “remember theme” or tracking cookies that are not session keys.
+**`Vortex\Http\Session`** is a facade for the default store from **`SessionManager`**. Use **`Session::store('name')`** to access a named store. With `native`, session **cookie** (name, lifetime, **`secure`**, **`SameSite`**, **`HttpOnly`**) is configured from **`config/session.php`** and applied via **`session_set_cookie_params()`**. Prefer **`Cookie`** + **`Response::cookie()`** for things like “remember theme” or tracking cookies that are not session keys.
 
 | Method | Purpose |
 |--------|---------|

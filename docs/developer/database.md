@@ -1,6 +1,6 @@
 # Database
 
-The app uses **`Vortex\Database\Connection`** (PDO) from **`config/database.php`**. For static calls after bootstrap, use **`Vortex\Database\DB`** (same singleton: **`DB::select`**, **`DB::execute`**, **`DB::transaction`**, …). Models extend **`Model`** — see [Models](models.md).
+The app uses **`Vortex\Database\DatabaseManager`** and a default **`Vortex\Database\Connection`** (PDO) from **`config/database.php`** (**`default`** + **`connections`** with per-connection **`driver`**). For static calls after bootstrap, use **`Vortex\Database\DB`** (default connection: **`DB::select`**, **`DB::execute`**, **`DB::transaction`**, …). Use **`DB::connection('name')`** for another configured connection. Models extend **`Model`** and use the **default** connection only — see [Models](models.md).
 
 ## Schema layout
 
@@ -24,7 +24,7 @@ This loads **`bootstrap/app.php`**, opens PDO, runs **`schema.sql`**, then each 
 
 ## SQLite vs MySQL
 
-Connection settings come from **`.env`** / **`config/database.php`**. Use SQL compatible with your driver (this project often uses SQLite locally; adjust types if you use MySQL in production).
+Connection settings come from **`.env`** / **`config/database.php`**. **`DB_CONNECTION`** selects the default connection name (the shipped config defines **`default`** with **`DB_DRIVER`** and related vars). Use SQL compatible with your driver (this project often uses SQLite locally; adjust types if you use MySQL in production).
 
 ## Checking connectivity
 

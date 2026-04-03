@@ -59,7 +59,7 @@ Passing **`doctor`** / **`doctor --production`** does **not** guarantee:
 Details: [framework/http.md](framework/http.md) (**Session**, **CSRF**).
 
 - [ ] TLS enabled (certificate on host or reverse proxy).
-- [ ] Session cookie config in `.env`: set **`SESSION_SECURE=1`** on HTTPS, choose **`SESSION_SAMESITE`** (`Lax`/`Strict`/`None`), and keep default **HttpOnly** behavior from **`Session`**.
+- [ ] Session config in `.env`: pick **`SESSION_STORE`** (`native`/`null`). For `native` on HTTPS, set **`SESSION_SECURE=1`**, choose **`SESSION_SAMESITE`** (`Lax`/`Strict`/`None`), and keep default **HttpOnly** behavior from **`Session`**.
 - [ ] If you use **`SESSION_SAMESITE=None`**, keep **`SESSION_SECURE=1`** (modern browsers reject `None` cookies over plain HTTP).
 - [ ] Behind a reverse proxy/CDN: set **`TRUSTED_PROXIES`** in `.env` (comma-separated IPs of your proxy, or `*` only if PHP is never reachable except via that proxy). The kernel runs **`TrustProxies::apply()`** before **`Request::capture()`**, honoring **`X-Forwarded-Proto`**, **`X-Forwarded-Host`**, and **`X-Forwarded-Port`** from trusted hops.
 - [ ] **Several PHP nodes** behind a load balancer: default PHP **file** sessions are **not** shared across servers — use **sticky sessions** to one node, or plan a **shared session backend** (roadmap §11).

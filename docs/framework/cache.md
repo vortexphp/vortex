@@ -1,14 +1,17 @@
 # Application cache
 
-**`Vortex\Contracts\Cache`** is bound in **`bootstrap/app.php`** (and **`Application::boot`**). After **`AppContext`** is set, **`Vortex\Cache\Cache`** is the static facade (**`Cache::remember`**, **`Cache::get`**, …) — same singleton as DI. Default implementation is **`FileCache`** (under **`storage/cache/data/`**). Set **`CACHE_DRIVER=null`** for **`NullCache`**.
+**`Vortex\Contracts\Cache`** is bound in **`bootstrap/app.php`** (and **`Application::boot`**) as the **default** store from **`CacheManager`**. After **`AppContext`** is set, **`Vortex\Cache\Cache`** is the static facade (**`Cache::remember`**, **`Cache::get`**, …) — same default store as DI. **`CacheManager`** resolves named **stores** lazily; use **`Cache::store('null')`** (or another name from config) for a non-default store.
 
 For **blog-style usage** (index list, per-slug post, **`forget` on save**), see [Cache](../developer/cache.md).
 
 | Config (`config/cache.php`) | `.env` |
 |-----------------------------|--------|
-| **`driver`** | **`CACHE_DRIVER`** — `file` (default) or `null` |
-| **`path`** | **`CACHE_PATH`** — override directory (default: `storage/cache/data` under project root) |
-| **`prefix`** | **`CACHE_PREFIX`** — logical key prefix (default `powercode:`) |
+| **`default`** | **`CACHE_STORE`** — which store name is default (falls back to **`CACHE_DRIVER`** if unset) |
+| **`stores.{name}.driver`** | Per-store: **`file`** (default) or **`null`** |
+| **`stores.file.path`** | **`CACHE_PATH`** — override directory (default: `storage/cache/data` under project root) |
+| **`stores.file.prefix`** | **`CACHE_PREFIX`** — logical key prefix (default `vortex:`) |
+
+Set **`CACHE_DRIVER=null`** (and optionally **`CACHE_STORE=null`**) to use **`NullCache`** as the default.
 
 > **Example — `Cache::remember`**
 
@@ -18,7 +21,15 @@ use Vortex\Cache\Cache;
 $rows = Cache::remember('blog.recent', 300, fn () => Post::publishedRecent(10));
 ```
 
-> **Example — inject `Cache` contract (same store)**
+> **Example — named store**
+
+```php
+use Vortex\Cache\Cache;
+
+Cache::store('null')->set('k', 1, null); // no-op store
+```
+
+> **Example — inject `Cache` contract (default store)**
 
 ```php
 use Vortex\Contracts\Cache;

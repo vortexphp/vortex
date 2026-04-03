@@ -79,7 +79,7 @@ Call the same **`forget`** lines from **delete** and from any action that change
 
 > **Example — inject `Cache` instead of static calls**
 
-Static **`Cache::`** matches **`DB::`** and is fine in handlers. For unit tests or shared libraries, inject **`Vortex\Contracts\Cache`** and call **`$this->cache->remember(...)`** — it is the **same** store as **`Cache::remember`**.
+Static **`Cache::`** matches **`DB::`** and is fine in handlers. For unit tests or shared libraries, inject **`Vortex\Contracts\Cache`** and call **`$this->cache->remember(...)`** — it is the **default** store, same as **`Cache::remember`**. Use **`Cache::store('name')`** when you need another configured store.
 
 ```php
 use Vortex\Contracts\Cache;
