@@ -114,6 +114,16 @@ return Response::redirect('/dashboard', 302);
 <input type="hidden" name="_csrf" value="{{ csrfToken|default('') }}">
 ```
 
+## Rate limiting (Throttle)
+
+**`Vortex\Http\Middleware\Throttle`** counts requests per client IP in a fixed time window using **`Contracts\Cache`**. Profiles live in **`config/throttle.php`** (`throttle.login`, `throttle.default`, …) as **`max_attempts`** and **`decay_seconds`**.
+
+Subclass **`Throttle`** and implement **`profile()`** (return the profile name), then add the class to a route’s middleware list (often on **POST** only). Example: **`App\Middleware\ThrottleLogin`** on **`POST /login`**.
+
+On exceed, responds **429** with **`Retry-After`**. JSON clients (**`Accept: application/json`**) get **`{"message":"Too Many Requests"}`**.
+
+If **`CACHE_DRIVER=null`**, the cache does not persist entries; throttling has no practical effect until you use a persistent cache driver.
+
 ## Uploaded files
 
 See **`Request::file('field')`** → **`UploadedFile`** in [Files and uploads](files-and-uploads.md).

@@ -12,6 +12,8 @@ use App\Handlers\DocsHandler;
 use App\Handlers\HomeHandler;
 use App\Middleware\GuestOnly;
 use App\Middleware\RequireAuth;
+use App\Middleware\ThrottleLogin;
+use App\Middleware\ThrottleRegister;
 use Vortex\Http\Response;
 use Vortex\Routing\Route;
 
@@ -36,10 +38,10 @@ return static function (): void {
     Route::get('/blog/{slug}', [BlogHandler::class, 'show']);
 
     Route::get('/register', [RegisterHandler::class, 'show'], [GuestOnly::class])
-        ->post('/register', [RegisterHandler::class, 'store'], [GuestOnly::class]);
+        ->post('/register', [RegisterHandler::class, 'store'], [GuestOnly::class, ThrottleRegister::class]);
 
     Route::get('/login', [LoginHandler::class, 'show'], [GuestOnly::class])
-        ->post('/login', [LoginHandler::class, 'store'], [GuestOnly::class]);
+        ->post('/login', [LoginHandler::class, 'store'], [GuestOnly::class, ThrottleLogin::class]);
 
     Route::post('/logout', [LogoutHandler::class, 'store']);
 

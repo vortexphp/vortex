@@ -43,6 +43,7 @@ TRUSTED_PROXIES=127.0.0.1
 | **`config/cache.php`** | `driver` (`file` / `null`), `path`, `prefix` — see [Cache](cache.md) |
 | **`config/events.php`** | `listen` — event FQCN → listener class(es); see [Events](events.md) |
 | **`config/mail.php`** | `driver`, `from`, `smtp` — see [Mail](mail.md) |
+| **`config/throttle.php`** | Named rate-limit profiles (`default`, `login`, …) for **`Vortex\Http\Middleware\Throttle`** — see [HTTP](http.md) |
 
 ## Content-Security-Policy
 

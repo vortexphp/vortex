@@ -56,6 +56,10 @@ public function handle(Request $request, Closure $next): Response
 
 **API-style guard** (if you need JSON instead of redirect, branch on `Request::wantsJson()` and return `Response::json([...], 401)`).
 
+## Rate limiting
+
+Subclass **`Vortex\Http\Middleware\Throttle`**, implement **`profile()`** (must match a key in **`config/throttle.php`**), and add the class to route middleware (see [framework/http.md](../framework/http.md#rate-limiting-throttle)).
+
 ## Registration
 
 - **Single route**: third argument to `Route::get` / `Route::post` (array of class names).

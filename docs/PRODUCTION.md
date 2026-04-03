@@ -5,6 +5,21 @@
 
 Step-by-step checklist for deploying this stack. Check items off as you complete them.
 
+### Suggested order (first deploy)
+
+Do the sections in this sequence so each step has what the next one needs:
+
+1. **§7** — Document root → **`public/`**, PHP-FPM (or Apache) wired; use **`docs/deploy/nginx-site.conf.example`** if helpful.
+2. **§1** — On the server: **`php vortex doctor`** (PHP 8.2+, **ext-pdo**, **ext-mbstring**, PDO driver, **`public/`**, writable **`storage/`**).
+3. **§2** — Production **`.env`**, **`composer install:prod`**, CSS build, then **`php vortex doctor --production`**.
+4. **§3** — TLS, **`TRUSTED_PROXIES`** if behind a proxy, **`SESSION_*`** if you use sessions/auth ([framework/http.md](framework/http.md)).
+5. **§6** — **`DB_*`**, **`php vortex db-check`**, **`php vortex migrate`**, backups, cache layout if **`CACHE_DRIVER=file`**.
+6. **§12** — If the app accepts **file uploads**: **`UPLOAD_MAX_BYTES`**, writable **`public/`** upload dirs, **`php.ini`** / **nginx** limits (see below).
+7. **§4** and **§5** — Log rotation, **`GET /health`** monitor, **`composer smoke`**, **`CSP_HEADER`**, CSRF on forms ([framework/http.md](framework/http.md#csrf)).
+8. **§8** — CI (**`validate-project`**, **`test`**, optional smoke).
+
+Sections **§9–§11** are reference while you build features, not a linear gate for go-live. **§12** (end of doc) is a go-live gate only when you use uploads.
+
 ---
 
 ## 1. Hosting & PHP
@@ -13,26 +28,40 @@ Run **`php vortex doctor`** (or **`composer doctor`**) on the server after deplo
 
 - [ ] Web server document root points at **`public/`** only (not the repo root). Doctor verifies `public/index.php` exists.
 - [ ] PHP **8.2+** on the server (Composer also requires `php:^8.2` and **`ext-pdo`**).
+- [ ] PHP extension **`ext-mbstring`** is installed (**`vortex doctor`** checks this).
 - [ ] At least one PDO driver: **pdo_sqlite** and/or **pdo_mysql** / **pdo_pgsql** (match `.env` `DB_DRIVER`). Doctor lists loaded drivers.
 - [ ] **`storage/`** and **`storage/logs/`** are writable by the PHP/web user. Doctor tries a create/delete probe in `storage/logs/`.
 - [ ] Confirm **`storage/logs/app.log`** is created after a handled error (or touch a test route that throws in staging). Doctor does not replace this; optional manual check.
+
+### What `vortex doctor` does not check (verify manually)
+
+Passing **`doctor`** / **`doctor --production`** does **not** guarantee:
+
+- Writable **upload** directories under **`public/`** or **`php.ini`** **`upload_max_filesize`** / **`post_max_size`** (see §12).
+- **OPcache** / **`display_errors`** / other **php.ini** production tuning (see §12).
+- **Locale files** deployed for **`APP_LOCALES`** (see §2).
 
 ---
 
 ## 2. Environment & build
 
-- [ ] Production **`.env`** on the server (never committed): **`APP_DEBUG=0`**, real **`APP_URL`**, DB variables if used, **`MAIL_*`** for real delivery (see [framework/mail.md](framework/mail.md)) — not **`log`** unless intentional.
+- [ ] Production **`.env`** on the server (never committed): **`APP_DEBUG=0`**, real **`APP_URL`**, **`APP_KEY`** set (required for **`Crypt::hash` / `Crypt::verify`** and similar; see **`.env.example`**), DB variables if used, **`MAIL_*`** for real delivery (see [framework/mail.md](framework/mail.md)) — not **`log`** unless intentional. For **`MAIL_ENCRYPTION`** **`tls`** or **`ssl`**, install **`ext-openssl`** (Composer suggests it).
+- [ ] **i18n**: set **`APP_LOCALE`**, **`APP_FALLBACK_LOCALE`**, and **`APP_LOCALES`** as needed; deploy the matching **`lang/*.php`** files ([framework/i18n.md](framework/i18n.md)).
 - [ ] Run **`php vortex doctor --production`** before or after deploy; it requires `.env`, **`APP_DEBUG` off**, **`APP_URL`** set and not localhost, **`DB_DATABASE`** if `DB_DRIVER` is not `sqlite`, plus **`vendor/autoload.php`** and a non-trivial **`public/css/app.css`** (run Tailwind build).
 - [ ] Deploy install: **`composer install:prod`** (alias for `composer install --no-dev --optimize-autoloader`).
 - [ ] Frontend: **`npm run build:css`** in CI or on deploy **or** commit an up-to-date **`public/css/app.css`** if Node is not on the server.
 
 ---
 
-## 3. HTTPS & cookies (when sessions / auth exist)
+## 3. HTTPS & cookies (sessions / auth)
+
+Details: [framework/http.md](framework/http.md) (**Session**, **CSRF**).
 
 - [ ] TLS enabled (certificate on host or reverse proxy).
-- [ ] Session cookie flags: **Secure**, **HttpOnly**, **SameSite** as appropriate (when you add sessions; use **`Request::isSecure()`** for Secure).
+- [ ] Session cookie config in `.env`: set **`SESSION_SECURE=1`** on HTTPS, choose **`SESSION_SAMESITE`** (`Lax`/`Strict`/`None`), and keep default **HttpOnly** behavior from **`Session`**.
+- [ ] If you use **`SESSION_SAMESITE=None`**, keep **`SESSION_SECURE=1`** (modern browsers reject `None` cookies over plain HTTP).
 - [ ] Behind a reverse proxy/CDN: set **`TRUSTED_PROXIES`** in `.env` (comma-separated IPs of your proxy, or `*` only if PHP is never reachable except via that proxy). The kernel runs **`TrustProxies::apply()`** before **`Request::capture()`**, honoring **`X-Forwarded-Proto`**, **`X-Forwarded-Host`**, and **`X-Forwarded-Port`** from trusted hops.
+- [ ] **Several PHP nodes** behind a load balancer: default PHP **file** sessions are **not** shared across servers — use **sticky sessions** to one node, or plan a **shared session backend** (roadmap §11).
 
 ---
 
@@ -41,7 +70,7 @@ Run **`php vortex doctor`** (or **`composer doctor`**) on the server after deplo
 - [ ] **Log rotation** or size limits for **`storage/logs`**. Example: **`docs/deploy/logrotate-app.conf.example`** (replace `@PROJECT_ROOT@`, install under `/etc/logrotate.d/`).
 - [ ] Optional: forward **`app.log`** to your host’s log aggregation.
 - [ ] Uptime monitor hits **`GET /health`** (JSON `{ "ok": true }`).
-- [ ] Post-deploy / CI: **`php vortex smoke`** or **`composer smoke`** (uses **`APP_URL`** or first argument; requires **`allow_url_fopen`**). Start the app or point **`APP_URL`** at staging first.
+- [ ] Post-deploy / CI: **`php vortex smoke`** or **`composer smoke`** — **`GET /health`** (expects JSON containing **`"ok"`**) and **`GET /`** (expects **200** and a non-trivial HTML body). Base URL: first CLI argument, else **`APP_URL`**, else **`http://127.0.0.1:8080`**. Requires **`allow_url_fopen`** (or use **curl** in CI and mirror those checks).
 
 ---
 
@@ -49,13 +78,14 @@ Run **`php vortex doctor`** (or **`composer doctor`**) on the server after deplo
 
 - [ ] Keep **`APP_DEBUG=0`** in production.
 - [ ] Review **`Response::withSecurityHeaders()`**. Optional **Content-Security-Policy**: set **`CSP_HEADER`** in `.env` (full header value); the kernel sends it after default security headers.
-- [ ] When you expose forms: CSRF, rate limiting, or WAF at the edge.
+- [ ] When you expose HTML **POST** forms: **`_csrf`** hidden field and **`Csrf::validate()`** on the handler (see [framework/http.md](framework/http.md#csrf)); add rate limiting or a WAF for sensitive endpoints.
 
 ---
 
 ## 6. Database
 
 - [ ] If not SQLite in production: set **`DB_*`** in `.env`, test connection from deploy host.
+- [ ] **SQLite in production** (if you use it): set **`DB_DATABASE`** to a **server-local path** the PHP user can read/write; include that file in **backups**; expect **limited concurrent writers** (typical SQLite constraint). **`doctor --production`** skips **`DB_DATABASE`** when **`DB_DRIVER=sqlite`** — still confirm the file exists and permissions are correct after first deploy.
 - [ ] Run **`php vortex db-check`** or **`composer db-check`** after deploy (bootstraps the app and runs **`SELECT 1`** through **`Connection`**).
 - [ ] Backups scheduled for production DB.
 - [ ] Schema source: start from **`database/schema.sql`** (users, posts for the blog, etc.); run **`php vortex migrate`** after changes.
@@ -73,20 +103,21 @@ Run **`php vortex doctor`** (or **`composer doctor`**) on the server after deplo
 ## 7. Process model
 
 - [ ] Use **PHP-FPM + nginx/Apache** (or host-managed PHP), not **`php -S`**, in production.
-- [ ] Example nginx + PHP-FPM site: **`docs/deploy/nginx-site.conf.example`** (adjust **`root`**, **`fastcgi_pass`**, **`server_name`**).
+- [ ] Example nginx + PHP-FPM site: **`docs/deploy/nginx-site.conf.example`** (adjust **`root`**, **`fastcgi_pass`**, **`server_name`**). Set **`client_max_body_size`** at least **`UPLOAD_MAX_BYTES`** if you accept uploads (see §12).
 
 ---
 
 ## 8. Automation & quality (recommended)
 
 - [ ] CI runs **`composer validate-project`** (wrapper for **`composer validate --no-check-publish`**) and **`composer test`** (PHPUnit in **`tests/`**), plus optionally **`php -l`** on changed files.
+- [ ] Optional: **`composer audit`** in CI for known-vulnerable dependencies.
 - [ ] Smoke test: **`composer smoke`** (or **`php vortex smoke https://staging.example.com`**) after deploy; same checks as §4.
 
 ---
 
 ## 9. Support helpers (step-by-step)
 
-Use these in order when you touch the relevant area. Helpers live under **`engine/Support/`** unless noted. They keep handlers and responses consistent in production.
+Use these in order when you touch the relevant area. Helpers live under **`framework/src/Support/`** unless noted. They keep handlers and responses consistent in production.
 
 ### 9.1 Arrays and strings (already in the repo)
 
@@ -159,7 +190,7 @@ Use these in order when you touch the relevant area. Helpers live under **`engin
 
 ## 10. Models and database access
 
-Domain rows are **`App\Models\*`** classes extending **`Vortex\Database\Model`** (Active Record–style: **`find`**, **`create`**, **`update($attrs)`**, **`save()`**, **`delete()`**, **`$fillable`**, timestamps). Use **`SomeModel::query()->where(…)->whereIn(…)->orderByDesc(…)->offset(…)->limit(…)->get()`**; the builder also supports **`count()`**, **`exists()`**, and **`paginate($page, $perPage)`** (see **`engine/Database/QueryBuilder.php`** — single-table **`SELECT`** only; column names must never come from raw user input).
+Domain rows are **`App\Models\*`** classes extending **`Vortex\Database\Model`** (Active Record-style: **`find`**, **`create`**, **`update($attrs)`**, **`save()`**, **`delete()`**, **`$fillable`**, timestamps). Use **`SomeModel::query()->where(…)->whereIn(…)->orderByDesc(…)->offset(…)->limit(…)->get()`**; the builder also supports **`count()`**, **`exists()`**, and **`paginate($page, $perPage)`** (see **`framework/src/Database/QueryBuilder.php`** — single-table **`SELECT`** only; column names must never come from raw user input).
 
 **`Vortex\Database\Connection`** (PDO) backs models and is also used for **`php vortex db-check`** and **`php vortex migrate`**. The static **`Vortex\Database\DB`** class resolves the same singleton (e.g. **`DB::transaction`**, **`DB::select`**) after bootstrap. Application cache: **`Vortex\Contracts\Cache`** and static **`Vortex\Cache\Cache`** (**`Cache::remember`**, …) — see §6 above, [framework/cache.md](framework/cache.md), [developer/cache.md](developer/cache.md). Events: **`Vortex\Events\Dispatcher`** and **`EventBus::dispatch`** — [framework/events.md](framework/events.md), [developer/events.md](developer/events.md). Mail: **`Mailer`**, **`Mail::send`**, **`MailMessage`** — [framework/mail.md](framework/mail.md), [developer/mail.md](developer/mail.md). Schema source: **`database/schema.sql`**.
 
@@ -167,7 +198,7 @@ Domain rows are **`App\Models\*`** classes extending **`Vortex\Database\Model`**
 
 ## 11. Framework evolution (recommended)
 
-These items are **not** required to ship, but they close common gaps in **`engine/`** as the product grows. Prioritize in roughly this order unless a feature forces otherwise.
+These items are **not** required to ship, but they close common gaps in **`framework/src/`** as the product grows. Prioritize in roughly this order unless a feature forces otherwise.
 
 ### High impact
 
@@ -179,7 +210,7 @@ These items are **not** required to ship, but they close common gaps in **`engin
 
 4. ~~**Outbound mail**~~ — **`Contracts\Mailer`**, **`Mail::send`**, drivers **`log`**, **`null`**, **`native`** (`mail()`), **`smtp`** ([framework/mail.md](framework/mail.md), [developer/mail.md](developer/mail.md)).
 
-5. **Rate limiting middleware** — Complements CSRF and security headers; throttle login, contact, and similar endpoints by IP or session (or rely on edge WAF — see §5).
+5. ~~**Rate limiting middleware**~~ — **`Vortex\Http\Middleware\Throttle`** (cache-backed fixed window), **`config/throttle.php`**, **`RateLimiter`**. Subclass **`Throttle`** per profile (see **`App\Middleware\ThrottleLogin`**). With **`CACHE_DRIVER=null`**, counts are not persisted (limits are effectively off).
 
 ### Developer experience
 
@@ -197,6 +228,24 @@ These items are **not** required to ship, but they close common gaps in **`engin
 
 11. **Static analysis in CI** — PHPStan or Psalm (and optional coverage gates) alongside **`composer test`** catches regressions PHPUnit alone may miss.
 
+12. **`doctor` hardening** — Assert (from **`config/files.php`**) that expected **`public/…`** upload roots exist and are writable (**`ext-mbstring`** and **`APP_KEY`** are already checked).
+
+13. **Deploy examples** — Expand **`docs/deploy/nginx-site.conf.example`**: HTTPS **`server`** block, documented **`client_max_body_size`**, optional cache headers for **`public/css/`** (or static assets) where it helps.
+
+14. **Shared sessions for multi-node** — When you outgrow sticky sessions: Redis/database session handler (or equivalent) so all PHP nodes share login state; document **`SESSION_*`** interaction.
+
+---
+
+## 12. Files, uploads & PHP runtime
+
+Details: [framework/files-and-uploads.md](framework/files-and-uploads.md), **`config/files.php`**, **`.env`** **`UPLOAD_MAX_BYTES`**.
+
+- [ ] Set **`UPLOAD_MAX_BYTES`** in **`.env`** to the max size your product allows (default **2 MB** in **`.env.example`**).
+- [ ] Ensure **`upload_max_filesize`** and **`post_max_size`** in **php.ini** (FPM pool / `.user.ini` if applicable) are **≥ `UPLOAD_MAX_BYTES`**; otherwise large requests fail before your app runs.
+- [ ] Create and **chmod** upload directories under **`public/`** that **`config/files.php`** uses (e.g. **`public/uploads/avatars`** for avatars). The PHP/web user must be able to **write** there.
+- [ ] Reverse proxy: **`client_max_body_size`** (nginx) or equivalent **≥ `UPLOAD_MAX_BYTES`**.
+- [ ] Production **php.ini** / pool: **`display_errors=Off`**, **`log_errors=On`**; enable **OPcache** with a sensible production config (validate in staging after deploy).
+
 ---
 
 ## Progress notes
@@ -207,7 +256,7 @@ Use this section to jot dates, blockers, or decisions as you go.
 |------|------|--------|
 | 1    |      | `vortex doctor` + `ext-pdo` in composer |
 | 2    |      | `doctor --production`, `composer install:prod` |
-| 3    |      | `TRUSTED_PROXIES`, `TrustProxies`, `Request::isSecure()` |
+| 3    |      | TLS, `SESSION_*`, `TRUSTED_PROXIES`, `TrustProxies`, CSRF on POST |
 | 4    |      | logrotate example, `vortex smoke`, `composer smoke` |
 | 5    |      | `CSP_HEADER` → kernel |
 | 6    |      | `db-check`, `database/schema.sql`, `CACHE_*`, `storage/cache/data` |
@@ -216,3 +265,4 @@ Use this section to jot dates, blockers, or decisions as you go.
 | 9    |      | `ArrayHelp`, `StringHelp`, `JsonHelp`, `UrlHelp`, `PathHelp`, `NumberHelp`, `DateHelp`, `HtmlHelp`, `CollectionHelp` |
 | 10   |      | `App\Models`, `Model`, `QueryBuilder`, `Connection`, `DB`, `Cache`, `Dispatcher`, `EventBus`, `Mailer`, `Mail` |
 | 11   |      | Framework evolution backlog (§11) |
+| 12   |      | `UPLOAD_MAX_BYTES`, `public/uploads/*`, php.ini, nginx body size, OPcache |
