@@ -12,7 +12,7 @@ Top-level layout for this codebase:
 | **`assets/views/`** | Twig templates (dot names → subpaths). |
 | **`assets/css/`** | Tailwind **input** (`app.css`); compiled CSS is written to **`public/css/app.css`**. |
 | **`lang/`** | `en.php`, `bg.php`, … — flat or nested arrays for **`trans('key')`**. |
-| **`database/`** | **`schema.sql`** baseline + **`patches/*.sql`** applied by **`php vortex migrate`**. |
+| **`database/`** | Class migrations in **`migrations/*.php`** applied by **`php vortex migrate`** (rollback with **`php vortex migrate:down`**). |
 | **`storage/`** | Logs (`storage/logs`), Twig cache when not in debug, other writable data. |
 | **`tests/`** | PHPUnit tests (`PowerCode\Tests\` for engine-style tests in this repo). |
 | **`power`** | CLI entry → **`ConsoleApplication`**. |

@@ -100,4 +100,4 @@ See **`engine/Database/Model.php`** for **`save()`**, instance **`update(array)`
 
 ## Schema
 
-Define tables in **`database/schema.sql`** and incremental patches in **`database/patches/*.sql`**. Apply with **`php vortex migrate`**.
+Define tables with class migrations in **`database/migrations/*.php`**. Apply with **`php vortex migrate`** and rollback with **`php vortex migrate:down`**.

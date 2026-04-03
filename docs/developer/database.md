@@ -6,21 +6,46 @@ The app uses **`Vortex\Database\DatabaseManager`** and a default **`Vortex\Datab
 
 | Artifact | Purpose |
 |----------|---------|
-| **`database/schema.sql`** | Baseline **`CREATE TABLE IF NOT EXISTS`** (and indexes). Run first on **`migrate`**. |
-| **`database/patches/*.sql`** | Incremental changes; executed in **sorted filename order** after `schema.sql`. |
+| **`database/migrations/*.php`** | Class migrations. Each file returns a **`Vortex\Database\Schema\Migration`** with **`id()`**, **`up()`**, and **`down()`**. |
 
-Naming patches with a numeric prefix keeps order obvious, e.g. **`001_add_posts_published_at.sql`**.
+Use sortable IDs (timestamp + name), e.g. **`20260403_120000_add_posts_table`**.
 
 ## Applying changes
 
 ```bash
 php vortex migrate
+php vortex migrate:down
 ```
 
-This loads **`bootstrap/app.php`**, opens PDO, runs **`schema.sql`**, then each **`patches/*.sql`**. Duplicate-column errors in patches are ignored so re-runs are safer for idempotent patches.
+`migrate` runs all pending migration classes and records them in **`vortex_migrations`**. `migrate:down` rolls back the last applied batch using each migration’s **`down()`** method.
 
-> **Tip**  
-> Keep **`schema.sql`** aligned with the full desired schema when you use it as a fresh-install baseline; use patches for everything that already shipped to production.
+> **Example — schema builder columns**
+
+```php
+use Vortex\Database\Connection;
+use Vortex\Database\Schema\Migration;
+use Vortex\Database\Schema\Schema;
+
+return new class implements Migration {
+    public function id(): string { return '20260403_120000_create_users'; }
+
+    public function up(Connection $db): void
+    {
+        Schema::connection($db)->create('users', static function ($table): void {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->text('avatar')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down(Connection $db): void
+    {
+        Schema::connection($db)->dropIfExists('users');
+    }
+};
+```
 
 ## SQLite vs MySQL
 

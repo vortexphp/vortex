@@ -19,7 +19,7 @@ How to build features in this project. Real references: **`app/Handlers/`**, **`
 ## Cross-cutting
 
 - [Authentication](auth.md) — sessions, **`RequireAuth`**, **`GuestOnly`**, **`ShareAuthUser`**
-- [Database](database.md) — **`schema.sql`**, patches, **`php vortex migrate`**
+- [Database](database.md) — class migrations, **`php vortex migrate`**, **`php vortex migrate:down`**
 - [Cache](cache.md) — real examples (**`BlogHandler`**, invalidation); [Framework: Cache](../framework/cache.md) for config
 - [Events](events.md) — **`EventBus`**, listeners; [Framework: Events](../framework/events.md) for config
 - [Mail](mail.md) — **`Mail::send`**, **`MailMessage`**; [Framework: Mail](../framework/mail.md) for drivers

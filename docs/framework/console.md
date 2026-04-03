@@ -10,6 +10,7 @@ The **`power`** script (project root) boots **`ConsoleApplication`**:
 php power
 php vortex help
 php vortex migrate
+php vortex migrate:down
 php vortex doctor
 php vortex db-check
 ```
@@ -22,7 +23,8 @@ php vortex db-check
 | **`doctor`** | Environment / production checklist; **`config/files.php`** upload **`directory`** roots under **`public/`** (exists, writable, probe) when that config exists |
 | **`smoke`** | HTTP GET health checks against a base URL |
 | **`db-check`** | `SELECT 1` via app **`Connection`** (loads bootstrap + `.env`) |
-| **`migrate`** | Runs **`database/schema.sql`**, then **`database/patches/*.sql`** in order (skips duplicate-column errors where applicable) |
+| **`migrate`** | Runs pending class migrations from **`database/migrations/*.php`** (calls each `up()`) |
+| **`migrate:down`** | Rolls back the last migration batch (calls each `down()` in reverse order) |
 
 ## Custom commands
 

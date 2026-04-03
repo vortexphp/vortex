@@ -89,7 +89,7 @@ Details: [framework/http.md](framework/http.md) (**Session**, **CSRF**).
 - [ ] **SQLite in production** (if you use it): set **`DB_DATABASE`** to a **server-local path** the PHP user can read/write; include that file in **backups**; expect **limited concurrent writers** (typical SQLite constraint). **`doctor --production`** skips **`DB_DATABASE`** when **`DB_DRIVER=sqlite`** — still confirm the file exists and permissions are correct after first deploy.
 - [ ] Run **`php vortex db-check`** or **`composer db-check`** after deploy (bootstraps the app and runs **`SELECT 1`** through **`Connection`**).
 - [ ] Backups scheduled for production DB.
-- [ ] Schema source: start from **`database/schema.sql`** (users, posts for the blog, etc.); run **`php vortex migrate`** after changes.
+- [ ] Schema source: class migrations under **`database/migrations/*.php`** (users, posts for the blog, etc.); run **`php vortex migrate`** after changes and use **`php vortex migrate:down`** for last-batch rollback.
 - [ ] Multi-step writes that must succeed or fail together: use **`Connection::transaction()`** or **`DB::transaction()`** (same PDO; see [developer/database.md](developer/database.md)).
 
 ### Application cache (`FileCache` / `NullCache`)
@@ -193,7 +193,7 @@ Use these in order when you touch the relevant area. Helpers live under **`frame
 
 Domain rows are **`App\Models\*`** classes extending **`Vortex\Database\Model`** (Active Record-style: **`find`**, **`create`**, **`update($attrs)`**, **`save()`**, **`delete()`**, **`$fillable`**, timestamps). Use **`SomeModel::query()->where(…)->whereIn(…)->orderByDesc(…)->offset(…)->limit(…)->get()`**; the builder also supports **`count()`**, **`exists()`**, and **`paginate($page, $perPage)`** (see **`framework/src/Database/QueryBuilder.php`** — single-table **`SELECT`** only; column names must never come from raw user input).
 
-**`Vortex\Database\Connection`** (PDO) backs models and is also used for **`php vortex db-check`** and **`php vortex migrate`**. The static **`Vortex\Database\DB`** class resolves the same singleton (e.g. **`DB::transaction`**, **`DB::select`**) after bootstrap. Application cache: **`Vortex\Contracts\Cache`** and static **`Vortex\Cache\Cache`** (**`Cache::remember`**, …) — see §6 above, [framework/cache.md](framework/cache.md), [developer/cache.md](developer/cache.md). Events: **`Vortex\Events\Dispatcher`** and **`EventBus::dispatch`** — [framework/events.md](framework/events.md), [developer/events.md](developer/events.md). Mail: **`Mailer`**, **`Mail::send`**, **`MailMessage`** — [framework/mail.md](framework/mail.md), [developer/mail.md](developer/mail.md). Schema source: **`database/schema.sql`**.
+**`Vortex\Database\Connection`** (PDO) backs models and is also used for **`php vortex db-check`** and migration commands (**`php vortex migrate`**, **`php vortex migrate:down`**). The static **`Vortex\Database\DB`** class resolves the same singleton (e.g. **`DB::transaction`**, **`DB::select`**) after bootstrap. Application cache: **`Vortex\Contracts\Cache`** and static **`Vortex\Cache\Cache`** (**`Cache::remember`**, …) — see §6 above, [framework/cache.md](framework/cache.md), [developer/cache.md](developer/cache.md). Events: **`Vortex\Events\Dispatcher`** and **`EventBus::dispatch`** — [framework/events.md](framework/events.md), [developer/events.md](developer/events.md). Mail: **`Mailer`**, **`Mail::send`**, **`MailMessage`** — [framework/mail.md](framework/mail.md), [developer/mail.md](developer/mail.md). Schema source: **`database/migrations/*.php`**.
 
 ---
 
@@ -260,7 +260,7 @@ Use this section to jot dates, blockers, or decisions as you go.
 | 3    |      | TLS, `SESSION_*`, `TRUSTED_PROXIES`, `TrustProxies`, CSRF on POST |
 | 4    |      | logrotate example, `vortex smoke`, `composer smoke` |
 | 5    |      | `CSP_HEADER` → kernel |
-| 6    |      | `db-check`, `database/schema.sql`, `CACHE_*`, `storage/cache/data` |
+| 6    |      | `db-check`, `database/migrations/*.php`, `CACHE_*`, `storage/cache/data` |
 | 7    |      | nginx example in `docs/deploy/` |
 | 8    |      | `composer validate-project`, `composer test` |
 | 9    |      | `ArrayHelp`, `StringHelp`, `JsonHelp`, `UrlHelp`, `PathHelp`, `NumberHelp`, `DateHelp`, `HtmlHelp`, `CollectionHelp` |

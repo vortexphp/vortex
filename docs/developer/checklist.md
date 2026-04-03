@@ -1,6 +1,6 @@
 # Checklist for a new feature
 
-1. **Migration** (if new tables): add `database/patches/NNN_description.sql`, run **`php vortex migrate`**. Keep `database/schema.sql` in sync if you maintain a full baseline.
+1. **Migration** (if new tables): add `database/migrations/YYYYMMDD_HHMMSS_description.php` returning a `Migration` class (`up`/`down`), then run **`php vortex migrate`**.
 2. **Model**: `app/Models/Thing.php` — `extends Model`, **`$fillable`**, optional **`table()`**, static scopes returning **`QueryBuilder`**, **`paginate()`** for lists.
 3. **Handler**: `app/Handlers/ThingHandler.php` — actions return **`Response`**, use **`View::html`**, **`Request::input`**, **`Validator::make`**, **`Csrf::validate`** on POSTs; inject **`ErrorRenderer`** for 404s if needed.
 4. **Routes**: `app/Routes/Web.php` or a new file in **`app/Routes/`** (not `*Console.php`) — **`Route::get` / `post`**, middleware array as third argument when needed.
