@@ -25,7 +25,7 @@
             "options": {
                 "symlink": true,
                 "versions": {
-                    "vortexphp/live": "0.1.0"
+                    "vortexphp/live": "0.1.1"
                 }
             }
         }
@@ -48,13 +48,6 @@
         "sort-packages": true
     },
     "scripts": {
-        "sync-live-assets": "@php build/sync-live-assets.php",
-        "post-install-cmd": [
-            "@sync-live-assets"
-        ],
-        "post-update-cmd": [
-            "@sync-live-assets"
-        ],
         "serve": "php vortex serve",
         "doctor": "php vortex doctor",
         "smoke": "php vortex smoke",
@@ -66,8 +59,7 @@
         "dev": "npm run dev",
         "test": "@php vendor/bin/phpunit -c phpunit.xml.dist",
         "build": [
-            "npm run build",
-            "@sync-live-assets"
+            "npm run build"
         ],
         "setup": [
             "@composer install",

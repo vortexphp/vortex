@@ -11,3 +11,5 @@ composer-setup.php
 composer.phar
 *.lock
 !composer.lock
+*.lock
+*.json
