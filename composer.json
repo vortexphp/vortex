@@ -26,6 +26,14 @@
         "sort-packages": true
     },
     "scripts": {
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "php vortex key:generate",
+            "@php -r \"file_exists('storage/database.sqlite') || touch('storage/database.sqlite');\"",
+            "php vortex migrate"
+        ],
         "serve": "php vortex serve",
         "doctor": "php vortex doctor",
         "smoke": "php vortex smoke",
@@ -34,14 +42,22 @@
         "migrate:down": "php vortex migrate:down",
         "install:prod": "@composer install --no-dev --optimize-autoloader",
         "validate-project": "composer validate --no-check-publish",
-        "dev": "npm run dev",
+        "setup": [
+            "@composer install",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "php vortex key:generate",
+            "@php -r \"file_exists('storage/database.sqlite') || touch('storage/database.sqlite');\"",
+            "php vortex migrate",
+            "npm install --ignore-scripts",
+            "npm run build"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185\" \"php vortex serve\" \"php vortex queue:work\" \"npm run dev\" --names=server,queue,vite --kill-others"
+        ],
         "test": "@php vendor/bin/phpunit -c phpunit.xml.dist",
         "build": [
             "npm run build"
-        ],
-        "setup": [
-            "@composer install",
-            "npm install"
         ]
     },
     "bin": [
