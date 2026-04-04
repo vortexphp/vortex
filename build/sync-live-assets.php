@@ -2,6 +2,12 @@
 
 declare(strict_types=1);
 
+/**
+ * Build step: copies vortexphp/live browser script into the web root.
+ * Canonical URL: /js/live.js (see ui/views/layouts/default.twig). Invoked by
+ * `composer run sync-live-assets` and `composer run build` (after Tailwind).
+ */
+
 $root = dirname(__DIR__);
 $source = $root . '/vendor/vortexphp/live/resources/live.js';
 $dest = $root . '/public/js/live.js';

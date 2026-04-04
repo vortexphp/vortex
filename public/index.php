@@ -31,6 +31,13 @@ try {
     error_log($exception->getMessage() . "\n" . $exception->getTraceAsString());
 
     if ($container instanceof \Vortex\Container) {
+        $custom = (new \App\Exceptions\Handler())->handle($exception, $container);
+        if ($custom !== null) {
+            $custom->send();
+
+            exit;
+        }
+
         $container->make(\Vortex\Http\ErrorRenderer::class)->exception($exception)->send();
 
         exit;

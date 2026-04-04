@@ -1,4 +1,6 @@
-/vendor
+vendor/
+# Stale duplicate of public/js/live.js and public/css — do not use public/dist/ for assets
+public/dist/
 /.phpunit.cache
 /node_modules
 .env
@@ -7,3 +9,4 @@ storage/logs/*.log
 composer-setup.php
 composer.phar
 *.lock
+!composer.lock

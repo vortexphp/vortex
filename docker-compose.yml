@@ -1,0 +1,9 @@
+services:
+  web:
+    image: php:8.3-cli
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+    command: ["php", "vortex", "serve", "0.0.0.0", "8080"]
