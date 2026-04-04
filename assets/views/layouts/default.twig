@@ -76,13 +76,11 @@
             </div>
             <div class="mt-10 flex flex-col gap-2 border-t border-zinc-200/80 pt-8 text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
                 <p>© {{ 'now'|date('Y') }} {{ appName|default('App') }}. {{ trans('layout.footer_rights') }}</p>
-                <div class="flex flex-col gap-1 sm:items-end">
-                    <p class="text-zinc-400 dark:text-zinc-600">{{ trans('layout.footer_stack') }}</p>
-                    {% set render_ms = benchmark_ms('http', 3) %}
-                    {% if render_ms > 0 %}
-                        <p class="tabular-nums text-zinc-400 dark:text-zinc-600">{{ trans('layout.render_time', { ms: render_ms }) }}</p>
-                    {% endif %}
-                </div>
+                <p class="flex flex-wrap items-center gap-2 text-zinc-400 dark:text-zinc-600 sm:justify-end">
+                    <span>{{ trans('layout.footer_stack') }}</span>
+                    <span aria-hidden="true">•</span>
+                    <span class="tabular-nums">{{ trans('layout.footer_render_time') }} {{ renderTimeMs|default(0) }} ms</span>
+                </p>
             </div>
             </div>
         </div>

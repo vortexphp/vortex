@@ -17,5 +17,6 @@ return [
     'middleware' => [
         App\Middleware\TrimTrailingSlash::class,
         App\Middleware\SetLocale::class,
+        App\Middleware\ShareRenderTime::class,
     ],
 ];

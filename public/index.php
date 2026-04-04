@@ -19,14 +19,12 @@ $container = null;
 
 try {
     require $projectRoot . '/vendor/autoload.php';
+    Benchmark::start('request');
 
     /** @var \Vortex\Container $container */
     $container = Application::boot($projectRoot, static function (Container $container, string $basePath): void {
         View::share('csrfToken', Csrf::token());
     })->container();
-
-    // After boot: measures HTTP pipeline + view (not container/config/DB warmup).
-    Benchmark::start('http');
 
     (new Kernel($container))->send();
 } catch (\Throwable $exception) {
