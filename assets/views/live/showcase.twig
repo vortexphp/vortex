@@ -1,0 +1,90 @@
+{% extends 'layouts/default.twig' %}
+{% block content %}
+<div class="mx-auto max-w-5xl space-y-16 pb-20">
+    <header class="space-y-4">
+        <p class="text-xs font-semibold uppercase tracking-wider text-violet-600 dark:text-violet-400">{{ trans('live_showcase.kicker') }}</p>
+        <h1 class="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-white sm:text-4xl">{{ title }}</h1>
+        <p class="max-w-2xl text-pretty text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">{{ trans('live_showcase.intro') }}</p>
+    </header>
+
+    <section class="rounded-2xl border border-violet-200/80 bg-zinc-950/[0.03] p-6 dark:border-violet-900/40 dark:bg-violet-950/20 sm:p-8" aria-labelledby="syntax-heading">
+        <h2 id="syntax-heading" class="text-sm font-semibold uppercase tracking-wider text-violet-600 dark:text-violet-400">{{ trans('live_showcase.syntax_title') }}</h2>
+        <p class="mt-2 max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">{{ trans('live_showcase.syntax_note') }}</p>
+        <pre class="mt-4 overflow-x-auto rounded-xl border border-zinc-200 bg-zinc-950 p-4 text-left text-[13px] leading-relaxed text-emerald-100 dark:border-zinc-700" tabindex="0"><code>{% verbatim %}&lt;div live-root live-state="…" live-url="/live/message" live-csrf="…"&gt;
+  &lt;p&gt;{{ count }}&lt;/p&gt;
+  &lt;button type="button" live:click="increment"&gt;+1&lt;/button&gt;
+&lt;/div&gt;{% endverbatim %}</code></pre>
+        <p class="mt-3 text-xs text-zinc-500 dark:text-zinc-500">live:submit, live:keydown, … → roadmap.</p>
+    </section>
+
+    <section class="rounded-2xl border border-zinc-200/90 bg-white/80 p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/50 sm:p-8" aria-labelledby="live-features-heading">
+        <h2 id="live-features-heading" class="text-lg font-semibold text-zinc-900 dark:text-white">{{ trans('live_showcase.features_title') }}</h2>
+        <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+            {% for item in [
+                'live_showcase.feat_snapshots',
+                'live_showcase.feat_csrf',
+                'live_showcase.feat_allowlist',
+                'live_showcase.feat_twig',
+                'live_showcase.feat_actions',
+                'live_showcase.feat_props',
+                'live_showcase.feat_lifecycle',
+                'live_showcase.feat_transport'
+            ] %}
+                <li class="flex gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                    <span class="mt-0.5 text-emerald-600 dark:text-emerald-400" aria-hidden="true">✓</span>
+                    <span>{{ trans(item) }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <p class="mt-6 text-sm leading-relaxed text-zinc-500 dark:text-zinc-500">{{ trans('live_showcase.roadmap_teaser') }}</p>
+    </section>
+
+    <section class="space-y-4" aria-labelledby="sec-counter">
+        <h2 id="sec-counter" class="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{{ trans('live_showcase.sec_counter') }}</h2>
+        <p class="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">{{ trans('live_showcase.sec_counter_body') }}</p>
+        <div class="grid gap-6 sm:grid-cols-2">
+            {{ live_mount('App\\Live\\Components\\Counter', { count: 0 }) }}
+            {{ live_mount('App\\Live\\Components\\Counter', { count: 10 }) }}
+        </div>
+    </section>
+
+    <section class="space-y-4" aria-labelledby="sec-stepper">
+        <h2 id="sec-stepper" class="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{{ trans('live_showcase.sec_stepper') }}</h2>
+        <p class="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">{{ trans('live_showcase.sec_stepper_body') }}</p>
+        <div class="grid gap-6 sm:grid-cols-2">
+            {{ live_mount('App\\Live\\Components\\Stepper', { value: 0 }) }}
+            {{ live_mount('App\\Live\\Components\\Stepper', { value: -3 }) }}
+        </div>
+    </section>
+
+    <section class="space-y-4" aria-labelledby="sec-toggle">
+        <h2 id="sec-toggle" class="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{{ trans('live_showcase.sec_toggle') }}</h2>
+        <p class="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">{{ trans('live_showcase.sec_toggle_body') }}</p>
+        {{ live_mount('App\\Live\\Components\\TogglePanel', { open: false }) }}
+    </section>
+
+    <section class="space-y-4" aria-labelledby="sec-props">
+        <h2 id="sec-props" class="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{{ trans('live_showcase.sec_props') }}</h2>
+        <p class="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">{{ trans('live_showcase.sec_props_body') }}</p>
+        <div class="grid gap-6 sm:grid-cols-2">
+            {{ live_mount('App\\Live\\Components\\PropsEcho', { headline: trans('live_showcase.props_a_headline'), tag: 'alpha' }) }}
+            {{ live_mount('App\\Live\\Components\\PropsEcho', { headline: trans('live_showcase.props_b_headline'), tag: 'beta' }) }}
+        </div>
+    </section>
+
+    <section class="space-y-4" aria-labelledby="sec-lifecycle">
+        <h2 id="sec-lifecycle" class="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{{ trans('live_showcase.sec_lifecycle') }}</h2>
+        <p class="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">{{ trans('live_showcase.sec_lifecycle_body') }}</p>
+        <div class="rounded-2xl border border-zinc-200/90 bg-zinc-50/80 p-5 dark:border-zinc-800 dark:bg-zinc-950/60">
+            <ol class="list-decimal space-y-2 pl-5 text-sm text-zinc-700 dark:text-zinc-300">
+                <li>{{ trans('live_showcase.cycle_mount') }}</li>
+                <li>{{ trans('live_showcase.cycle_hydrate') }}</li>
+                <li>{{ trans('live_showcase.cycle_action') }}</li>
+                <li>{{ trans('live_showcase.cycle_dehydrate') }}</li>
+                <li>{{ trans('live_showcase.cycle_render') }}</li>
+            </ol>
+        </div>
+        {{ live_mount('App\\Live\\Components\\HydrateMeter', { hydrations: 0, pings: 0 }) }}
+    </section>
+</div>
+{% endblock %}

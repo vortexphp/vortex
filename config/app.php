@@ -19,4 +19,8 @@ return [
         App\Middleware\SetLocale::class,
         App\Middleware\ShareRenderTime::class,
     ],
+    'twig_extensions' => [
+        \Vortex\Live\Twig\LiveExtension::class,
+    ],
 ];
+

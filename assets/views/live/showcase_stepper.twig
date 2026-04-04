@@ -1,0 +1,9 @@
+<div class="rounded-2xl border border-zinc-200/90 bg-white/90 p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-900/60">
+    <p class="text-xs font-semibold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">{{ trans('live_showcase.stepper_label') }}</p>
+    <p class="mt-3 tabular-nums text-3xl font-semibold text-zinc-900 dark:text-white">{{ value }}</p>
+    <div class="mt-4 flex flex-wrap gap-2">
+        <button type="button" live:click="decrement" class="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-800 shadow-sm transition hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700">−</button>
+        <button type="button" live:click="increment" class="rounded-xl bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-cyan-500">+</button>
+        <button type="button" live:click="reset" class="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-800 shadow-sm transition hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700">{{ trans('live_showcase.btn_reset') }}</button>
+    </div>
+</div>

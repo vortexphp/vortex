@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Handlers\HomeHandler;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LiveShowcaseController;
 use Vortex\Http\Response;
+use Vortex\Live\Http\LiveController;
 use Vortex\Routing\Route;
 
 /**
@@ -12,4 +13,6 @@ use Vortex\Routing\Route;
  */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/live', [LiveShowcaseController::class, 'index'])->name('live.showcase');
 Route::get('/health', static fn (): Response => Response::json(['ok' => true]))->name('health');
+Route::post('/live/message', [LiveController::class, 'message'])->name('live.message');

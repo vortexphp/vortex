@@ -1,0 +1,10 @@
+<div class="rounded-2xl border border-zinc-200/90 bg-white/90 p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-900/60">
+    <p class="text-xs font-semibold uppercase tracking-wider text-violet-600 dark:text-violet-400">{{ trans('home.live_demo_label') }}</p>
+    <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ trans('home.live_demo_body') }}</p>
+    <div class="mt-4 flex flex-wrap items-center gap-3">
+        <span class="tabular-nums text-2xl font-semibold text-zinc-900 dark:text-white">{{ count }}</span>
+        <button type="button" live:click="increment" class="rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 dark:focus:ring-offset-zinc-900">
+            {{ trans('home.live_increment') }}
+        </button>
+    </div>
+</div>
