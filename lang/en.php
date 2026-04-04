@@ -35,6 +35,7 @@ return [
         'feat_allowlist' => 'Only component classes listed in config/live.php can run',
         'feat_twig' => 'Twig helper live_mount(class, props)',
         'feat_actions' => 'Livewire-style markup: live:click="method" inside a [live-root] island (live-state, live-url, live-csrf)',
+        'feat_args' => 'Action parameters: optional live:args="[1, true]" JSON array → body args[] with invokeArgs()',
         'feat_props' => 'Initial public properties from live_mount and round-trip in the snapshot',
         'feat_lifecycle' => 'Hooks: mount, hydrating/hydrated, updating/updated, dehydrating/dehydrated, render/rendered',
         'feat_transport' => 'Vanilla JS replaces the component root with fresh HTML from the server',
@@ -68,6 +69,7 @@ return [
         'meter_pings' => 'Ping clicks',
         'meter_ping' => 'Ping server',
         'stepper_label' => 'Stepper',
+        'stepper_plus_five' => '+5 (live:args)',
         'btn_reset' => 'Reset',
     ],
     'home' => [

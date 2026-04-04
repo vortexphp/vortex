@@ -35,6 +35,7 @@ return [
         'feat_allowlist' => 'Само класове от config/live.php могат да се изпълняват',
         'feat_twig' => 'Twig помощник live_mount(class, props)',
         'feat_actions' => 'Mark-up като Livewire: live:click="метод" в [live-root] остров (live-state, live-url, live-csrf)',
+        'feat_args' => 'Параметри на действие: по избор live:args="[1, true]" JSON → body args[] с invokeArgs()',
         'feat_props' => 'Начални публични полета от live_mount и обратно в snapshot',
         'feat_lifecycle' => 'Куки: mount, hydrating/hydrated, updating/updated, dehydrating/dehydrated, render/rendered',
         'feat_transport' => 'Vanilla JS заменя root на компонента с нов HTML от сървъра',
@@ -68,6 +69,7 @@ return [
         'meter_pings' => 'Ping кликове',
         'meter_ping' => 'Ping към сървъра',
         'stepper_label' => 'Стъпков контрол',
+        'stepper_plus_five' => '+5 (live:args)',
         'btn_reset' => 'Нула',
     ],
     'home' => [

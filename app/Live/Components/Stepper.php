@@ -29,4 +29,9 @@ final class Stepper extends Component
     {
         $this->value = 0;
     }
+
+    public function add(int $delta): void
+    {
+        $this->value += $delta;
+    }
 }

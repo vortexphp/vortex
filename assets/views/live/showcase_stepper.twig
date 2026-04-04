@@ -5,5 +5,6 @@
         <button type="button" live:click="decrement" class="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-800 shadow-sm transition hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700">−</button>
         <button type="button" live:click="increment" class="rounded-xl bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-cyan-500">+</button>
         <button type="button" live:click="reset" class="rounded-xl border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-800 shadow-sm transition hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700">{{ trans('live_showcase.btn_reset') }}</button>
+        <button type="button" live:click="add" live:args="[5]" class="rounded-xl border border-cyan-500/40 bg-cyan-50 px-3 py-2 text-sm font-semibold text-cyan-900 shadow-sm transition hover:bg-cyan-100 dark:border-cyan-500/30 dark:bg-cyan-950/50 dark:text-cyan-200 dark:hover:bg-cyan-900/40">{{ trans('live_showcase.stepper_plus_five') }}</button>
     </div>
 </div>
