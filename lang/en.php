@@ -16,6 +16,7 @@ return [
         'footer_explore' => 'Explore',
         'footer_rights' => 'All rights reserved.',
         'footer_stack' => 'PHP · Twig · Tailwind',
+        'render_time' => 'Rendered in :ms ms',
     ],
     'nav' => [
         'home' => 'Home',
