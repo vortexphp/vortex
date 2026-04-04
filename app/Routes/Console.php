@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-use Vortex\Console\ConsoleApplication;
+use Vortex\Vortex;
 
 /**
- * Register application console commands.
+ * Optional console registration (e.g. commands outside `app/Console/Commands`).
+ * Classes under `app/Console/Commands` are registered automatically (see CommandDiscovery).
  *
- * @return callable(ConsoleApplication): void
+ * Vortex::command(App\Console\Commands\MyCommand::class);
  */
-return static function (ConsoleApplication $app): void {
-    $app->register(new App\Console\Commands\HelloCommand());
-};
