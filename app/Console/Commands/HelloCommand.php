@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Console\Commands;
+
+use Vortex\Console\Command;
+use Vortex\Console\Input;
+
+final class HelloCommand extends Command
+{
+    // Other stubs in this folder: controller.stub — php ... make:controller <Name>
+
+    public function description(): string
+    {
+        return 'TODO: one-line description';
+    }
+
+    protected function execute(Input $input): int
+    {
+        // $input->arguments() — positional argv after the command
+        // $input->argument(0), $input->option('name', 'default'), $input->flag('verbose')
+        $this->info('Hello Vortex!');
+
+        return 0;
+    }
+}

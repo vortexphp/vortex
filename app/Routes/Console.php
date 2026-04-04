@@ -10,5 +10,5 @@ use Vortex\Console\ConsoleApplication;
  * @return callable(ConsoleApplication): void
  */
 return static function (ConsoleApplication $app): void {
-    // $app->register(new App\Console\ExampleCommand());
+    $app->register(new App\Console\Commands\HelloCommand());
 };
