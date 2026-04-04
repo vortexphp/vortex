@@ -1,3 +1,4 @@
+.DS_Store
 vendor/
 # Stale duplicate of public/js/live.js and public/css — do not use public/dist/ for assets
 public/dist/
