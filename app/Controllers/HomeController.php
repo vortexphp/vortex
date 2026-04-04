@@ -12,7 +12,7 @@ final class HomeController extends Controller
 {
     public function index(): Response
     {
-        return View::html('home', [
+        return View::html('pages.home', [
             'title' => \trans('home.title'),
         ]);
     }
