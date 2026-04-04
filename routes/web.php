@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LiveShowcaseController;
 use Vortex\Http\Response;
 use Vortex\Live\Http\LiveController;
 use Vortex\Routing\Route;
+use Vortex\vortex\app\Controllers\HomeController;
+use Vortex\vortex\app\Controllers\LiveShowcaseController;
 
 /**
  * HTTP route registration. Loaded automatically from `app/Routes/` (see {@see \Vortex\Routing\RouteDiscovery}).

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit;
+namespace Vortex\vortex\app\tests\Unit;
 
 use App\Services\AbstractService;
 use PHPUnit\Framework\TestCase;

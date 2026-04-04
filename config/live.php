@@ -9,6 +9,6 @@ declare(strict_types=1);
  */
 return [
     'components' => [
-        \App\Live\Components\Counter::class,
+        \Vortex\vortex\app\Components\Live\Counter::class,
     ],
 ];

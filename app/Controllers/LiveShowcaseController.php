@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace Vortex\vortex\app\Controllers;
 
 use Vortex\Http\Controller;
 use Vortex\Http\Response;

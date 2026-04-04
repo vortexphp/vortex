@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Database;
+namespace Vortex\vortex\app\tests\Unit\Database;
 
 use Database\Seeders\DatabaseSeeder;
 use PHPUnit\Framework\TestCase;
