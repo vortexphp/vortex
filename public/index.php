@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * Front controller.
- * HTTP routes are discovered from app/Routes/*.php.
+ * HTTP routes are discovered from routes/*.php.
  */
 
 use Vortex\Application;

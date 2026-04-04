@@ -5,8 +5,8 @@ declare(strict_types=1);
 use Vortex\Vortex;
 
 /**
- * Optional console registration (e.g. commands outside `app/Console/Commands`).
- * Classes under `app/Console/Commands` are registered automatically (see CommandDiscovery).
+ * Optional console registration (e.g. commands outside `app/Commands`).
+ * Classes under `app/Commands` are registered automatically (see CommandDiscovery).
  *
- * Vortex::command(App\Console\Commands\MyCommand::class);
+ * Vortex::command(App\Commands\MyCommand::class);
  */

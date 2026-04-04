@@ -41,8 +41,8 @@
         <h2 id="sec-counter" class="text-sm font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">{{ trans('live_showcase.sec_counter') }}</h2>
         <p class="max-w-2xl text-sm text-zinc-600 dark:text-zinc-400">{{ trans('live_showcase.sec_counter_body') }}</p>
         <div class="grid gap-6 sm:grid-cols-2">
-            {{ live_mount('App\\Live\\Components\\Counter', { count: 0 }) }}
-            {{ live_mount('App\\Live\\Components\\Counter', { count: 10 }) }}
+            {{ live_mount('App\\Live\\Counter', { count: 0 }) }}
+            {{ live_mount('App\\Live\\Counter', { count: 10 }) }}
         </div>
     </section>
 </div>

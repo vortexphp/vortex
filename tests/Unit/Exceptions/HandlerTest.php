@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Vortex\vortex\app\tests\Unit\Exceptions;
+namespace App\Tests\Unit\Exceptions;
 
 use App\Exceptions\Handler;
 use PHPUnit\Framework\TestCase;

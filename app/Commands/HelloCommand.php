@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Vortex\vortex\app\Commands;
+namespace App\Commands;
 
 use Vortex\Console\Command;
 use Vortex\Console\Input;

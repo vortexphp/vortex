@@ -1,6 +1,6 @@
 {
     "name": "vortexphp/vortex",
-    "description": "Lightweight PHP application stack (app/, config/, ui/, lang/)",
+    "description": "Lightweight PHP application stack (app/, config/, resources/views, routes/, lang/)",
     "type": "project",
     "license": "MIT",
     "require": {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Vortex\vortex\app\Components\Live;
+namespace App\Live;
 
 use Vortex\Live\Component;
 

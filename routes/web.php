@@ -5,11 +5,11 @@ declare(strict_types=1);
 use Vortex\Http\Response;
 use Vortex\Live\Http\LiveController;
 use Vortex\Routing\Route;
-use Vortex\vortex\app\Controllers\HomeController;
-use Vortex\vortex\app\Controllers\LiveShowcaseController;
+use App\Controllers\HomeController;
+use App\Controllers\LiveShowcaseController;
 
 /**
- * HTTP route registration. Loaded automatically from `app/Routes/` (see {@see \Vortex\Routing\RouteDiscovery}).
+ * HTTP route registration. Loaded automatically from `routes/` (see {@see \Vortex\Routing\RouteDiscovery}).
  */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');

@@ -43,7 +43,7 @@ return [
     'home' => [
         'title' => 'Ship ideas, not boilerplate',
         'badge_online' => 'Ready to build',
-        'intro' => 'A focused PHP stack with clean routing, Twig layouts, Tailwind, and a tiny CLI. Put domain logic in app/, templates in ui/views, and routes in app/Routes—then ship.',
+        'intro' => 'A focused PHP stack with clean routing, Twig layouts, Tailwind, and a tiny CLI. Put domain logic in app/, templates in resources/views, and routes in routes/—then ship.',
         'health_cta' => 'API health JSON',
         'dev_server' => 'Local dev:',
         'stack_1' => 'PHP 8.2+',

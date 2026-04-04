@@ -43,7 +43,7 @@ return [
     'home' => [
         'title' => 'Пускайте идеи, не шаблонен код',
         'badge_online' => 'Готово за работа',
-        'intro' => 'Фокусиран PHP стек с ясни маршрути, Twig layout-и, Tailwind и малък CLI. Логика в app/, шаблони в ui/views, маршрути в app/Routes—и напред.',
+        'intro' => 'Фокусиран PHP стек с ясни маршрути, Twig layout-и, Tailwind и малък CLI. Логика в app/, шаблони в resources/views, маршрути в routes/—и напред.',
         'health_cta' => 'Health JSON',
         'dev_server' => 'Локална разработка:',
         'stack_1' => 'PHP 8.2+',
