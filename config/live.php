@@ -10,9 +10,5 @@ declare(strict_types=1);
 return [
     'components' => [
         \App\Live\Components\Counter::class,
-        \App\Live\Components\Stepper::class,
-        \App\Live\Components\TogglePanel::class,
-        \App\Live\Components\PropsEcho::class,
-        \App\Live\Components\HydrateMeter::class,
     ],
 ];
