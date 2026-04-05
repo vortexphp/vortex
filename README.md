@@ -71,7 +71,7 @@ make build
 # or: composer run build
 ```
 
-`npm run build` only compiles CSS; `composer run build` / `make build` runs that step plus `sync-live-assets` (implementation: `build/sync-live-assets.php`), so prefer Make or Composer for a full asset build.
+`npm run build` only compiles CSS; `composer run build` / `make build` also runs **`php vortex publish:assets`**, which copies package assets (for example **`vortexphp/live`** → `public/js/live.js`).
 
 Watch CSS during development:
 
@@ -106,7 +106,7 @@ composer run db-check
 | Output | Source | How it is produced |
 |--------|--------|--------------------|
 | `public/css/app.css` | `ui/css/app.css` | Tailwind: `npm run build` / `npm run dev` |
-| `public/js/live.js` | `vendor/vortexphp/live/resources/live.js` | `build/sync-live-assets.php` via `composer run sync-live-assets` (also part of `composer run build`; runs after `composer install` / `update`) |
+| `public/js/live.js` | `vendor/vortexphp/live/resources/live.js` | `php vortex publish:assets` (from **`LivePackage::publicAssets()`**); part of `composer run build`; also Composer **post-install** / **post-update** |
 
 Templates reference `/css/app.css` and `/js/live.js` only. There is no separate `public/dist/` pipeline in this app; that path is gitignored to avoid duplicate stale files.
 

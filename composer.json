@@ -5,8 +5,8 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "vortexphp/framework": "^0.11",
-        "vortexphp/live": "^0.0.1"
+        "vortexphp/framework": "^0.12",
+        "vortexphp/live": "^0.2"
     },
     "autoload": {
         "psr-4": {
@@ -34,6 +34,13 @@
             "@php -r \"file_exists('storage/database.sqlite') || touch('storage/database.sqlite');\"",
             "php vortex migrate"
         ],
+        "post-install-cmd": [
+            "@publish-assets"
+        ],
+        "post-update-cmd": [
+            "@publish-assets"
+        ],
+        "publish-assets": "php vortex publish:assets",
         "serve": "php vortex serve",
         "doctor": "php vortex doctor",
         "smoke": "php vortex smoke",
@@ -57,7 +64,8 @@
         ],
         "test": "@php vendor/bin/phpunit -c phpunit.xml.dist",
         "build": [
-            "npm run build"
+            "npm run build",
+            "@publish-assets"
         ]
     },
     "bin": [
